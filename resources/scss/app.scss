@@ -1,0 +1,136 @@
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css");
+
+#app {
+    padding: 0 !important;
+    margin: 0 !important;
+    background-color: #EEEEEE;
+
+    .main-sidebar {
+        height: 100vh;
+        background-color: #595959;
+
+        .nav {
+            .nav-item {
+                list-style: none;
+
+                h4 {
+                    width: 100%;
+                    display: flex;
+                    align-items: center;
+                    padding-left: 2.5rem;
+                }
+
+                .dropdown-arrow {
+                    display: flex;
+                    align-items: center;
+                    transition: 0.5s;
+
+                    .arrow-left {
+                        font-size: larger;
+
+                    }
+
+                    &.down {
+                        transition: 0.5s;
+                        transform: rotate(-90deg);
+                    }
+                }
+
+                .menu-collapse {
+                    .collapse-item {
+                        padding-left: 3rem;
+                    }
+                }
+            }
+        }
+    }
+
+    .main-content {
+        background-color: #EEEEEE;
+
+        .select-platform {
+            padding: 8px;
+
+            .platform-box {
+                border: 2px solid #595959;
+
+                #select-platform {
+                    border: none;
+                    color: #8B7F80;
+                }
+            }
+        }
+
+        .table-data-post {
+            background-color: white;
+            padding: 20px;
+            border-radius: 1.5rem;
+
+            #datatable {
+                thead {
+                    th {
+                        color: white !important;
+                        background-color: #595959;
+                        border: 2px;
+                        border-style: ridge;
+                        border-color: #D4D4D4;
+                    }
+                }
+
+                tbody {
+                    td {
+                        border: 2px;
+                        border-style: groove;
+                        border-color: #D4D4D4;
+                    }
+                }
+            }
+        }
+
+
+    }
+
+    .main-navbar {
+        background-color: white;
+        border-top: 1px solid #595959;
+        border-bottom: 1px solid #595959;
+
+        .nav-item {
+            .dropdown-menu {
+                width: 100%;
+            }
+        }
+    }
+
+    .load-block {
+        width: 100%;
+        height: 200px;
+        display: none !important;
+
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 2s linear infinite;
+            margin: 0 auto;
+            margin-top: 50px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    }
+
+    .loading {
+        display: block !important;
+    }
+
+}
