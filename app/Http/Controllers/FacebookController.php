@@ -269,9 +269,7 @@ class FacebookController extends Controller
             foreach ($listPost as $index => $post) {
                 $listPost[$index]['img'] = Image::where('post_id', $post['post_id'])->first();
             }
-
             return view('user.post.tableView.facebookPost', ['data' => $listPost]);
-
         }
     }
 }
