@@ -91,9 +91,33 @@
             const selectPlatform = $("#select-platform");
             const tableBody = $("#table-body");
             const loadingElement = $("#loading");
+            let selectedPlatform = selectPlatform.val();
+
+            if (!loadingElement.hasClass("loading")) {
+                loadingElement.addClass("loading");
+            }
+            tableBody.html('');
+
+            if (selectedPlatform === 'facebook') {
+                $.ajax({
+                    url: "{{ route('user.table.fb-post-info') }}",
+                    method: 'get',
+                    data: {
+                        platform: selectedPlatform
+                    },
+                    success: function(response) {
+                        loadingElement.removeClass('loading');
+                        tableBody.html(response);
+                    },
+                    error: function() {
+                        loadingElement.removeClass('loading');
+                        alert('Error fetching data.');
+                    }
+                });
+            }
 
             selectPlatform.change(function() {
-                const selectedPlatform = selectPlatform.val();
+                selectedPlatform = selectPlatform.val();
                 if (!loadingElement.hasClass("loading")) {
                     loadingElement.addClass("loading");
                 }

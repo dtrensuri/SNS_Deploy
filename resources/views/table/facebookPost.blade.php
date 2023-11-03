@@ -2,7 +2,7 @@
     <tr>
         <td>
             @php
-                $time = new \DateTime($postDetail->created_time);
+                $time = new \DateTime($postDetail->created_at);
                 echo $time->format('d/m/Y H:i:s');
             @endphp
         </td>
@@ -16,6 +16,8 @@
                 @if (isset($postDetail->content))
                     <p class="ms-2">
                         {!! $postDetail->content !!}
+                        <br>
+                        <a href="https://www.facebook.com/{{ $postDetail->post_id }}">>>View</a>
                     </p>
                 @endif
             </div>
@@ -45,7 +47,7 @@
         <td>
             <div class="comment-{{ $postDetail->post_id }}">
                 <p>
-                    {{ $postDetail->total_shares }}
+                    {{ $postDetail->total_comment }}
                 </p>
             </div>
         </td>
