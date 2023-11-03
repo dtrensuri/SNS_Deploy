@@ -9,8 +9,9 @@
         <td>
             <div class="content-{{ $postDetail->post_id }} d-flex">
                 @if (isset($postDetail->img))
-                    <img src="{{ $postDetail->img->image_url }}" alt="Image" class="img-fluid" width="120px"
-                        height="100px">
+                    <div class="img"
+                        style="width: 60px;  height: 40px; background-size:cover ; background-image: url('{{ $postDetail->img->image_url }}')">
+                    </div>
                 @endif
 
                 @if (isset($postDetail->content))

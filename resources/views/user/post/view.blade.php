@@ -27,59 +27,6 @@
                         </tr>
                     </thead>
                     <tbody id="table-body">
-                        {{-- @foreach ($data as $index => $postDetail)
-                            <tr>
-                                <td>
-                                    @php
-                                        $time = new \DateTime($postDetail->created_time);
-                                        echo $time->format('d/m/Y H:i:s');
-                                    @endphp
-                                </td>
-                                <td>
-                                    <div class="content-{{ $postDetail->post_id }} d-flex">
-                                        @if (isset($postDetail->img))
-                                            <img src="{{ $postDetail->img->image_url }}" alt="Image" class="img-fluid"
-                                                width="120px" height="100px">
-                                        @endif
-
-                                        @if (isset($postDetail->content))
-                                            <p class="ms-2">
-                                                {!! $postDetail->content !!}
-                                            </p>
-                                        @endif
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="impressions-{{ $postDetail->post_id }}">
-                                        <p>
-                                            {{ $postDetail->total_impressions }}
-
-                                        </p>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="engaged-{{ $postDetail->post_id }}">
-                                        <p>
-                                            {{ $postDetail->total_engaged }}
-                                        </p>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="reaction-{{ $postDetail->post_id }}">
-                                        <p>
-                                            {{ $postDetail->total_reactions }}
-                                        </p>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="comment-{{ $postDetail->post_id }}">
-                                        <p>
-                                            {{ $postDetail->total_shares }}
-                                        </p>
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforeach --}}
                     </tbody>
                 </table>
                 {{ view('component.loading') }}
@@ -91,44 +38,14 @@
             const selectPlatform = $("#select-platform");
             const tableBody = $("#table-body");
             const loadingElement = $("#loading");
-            let selectedPlatform = selectPlatform.val();
 
-            if (!loadingElement.hasClass("loading")) {
-                loadingElement.addClass("loading");
-            }
-            tableBody.html('');
-
-            if (selectedPlatform === 'facebook') {
-                $.ajax({
-                    url: "{{ route('user.table.fb-post-info') }}",
-                    method: 'get',
-                    data: {
-                        platform: selectedPlatform
-                    },
-                    success: function(response) {
-                        loadingElement.removeClass('loading');
-                        tableBody.html(response);
-                    },
-                    error: function() {
-                        loadingElement.removeClass('loading');
-                        alert('Error fetching data.');
-                    }
-                });
-            }
-
-            selectPlatform.change(function() {
-                selectedPlatform = selectPlatform.val();
-                if (!loadingElement.hasClass("loading")) {
-                    loadingElement.addClass("loading");
-                }
-                tableBody.html('');
-
-                if (selectedPlatform === 'facebook') {
+            function fetchData(platform) {
+                if (platform === 'facebook') {
                     $.ajax({
                         url: "{{ route('user.table.fb-post-info') }}",
                         method: 'get',
                         data: {
-                            platform: selectedPlatform
+                            platform: platform
                         },
                         success: function(response) {
                             loadingElement.removeClass('loading');
@@ -140,7 +57,18 @@
                         }
                     });
                 }
+            }
+
+            selectPlatform.change(function() {
+                const selectedPlatform = selectPlatform.val();
+                if (!loadingElement.hasClass("loading")) {
+                    loadingElement.addClass("loading");
+                }
+                tableBody.html('');
+                fetchData(selectedPlatform);
             });
+
+            fetchData(selectPlatform.val());
         });
     </script>
 @endsection
