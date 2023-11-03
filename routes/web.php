@@ -33,8 +33,9 @@ Route::name('user')->middleware('auth')->group(function () {
         Route::get('channel-settings', [SettingController::class, 'createChannelSetting'])->name('.channel');
     });
 
-    Route::get('fb-access', [FacebookController::class, 'OAUth2Client']);
-    Route::get('fb-post', [FacebookController::class, 'showListPost']);
+    Route::get('fb-access', [FacebookController::class, 'checkAccessToken']);
+    Route::get('backup-fb-data', [FacebookController::class, 'backupData']);
+    Route::get('fb-post-insights', [FacebookController::class, 'renderTablePostInsights'])->name('.table.fb-post-info');
     Route::get('autoUpdate', [FacebookController::class, 'autoUpdateFacebookData']);
     Route::get('fb-login', [FacebookController::class, 'loginFacebook']);
 });

@@ -12,9 +12,9 @@ return new class extends Migration {
     {
         Schema::create('images', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('post_id');
-            $table->foreign('post_id')->references('id')->on('posts');
-            $table->string('image_url');
+            $table->string('post_id');
+            $table->foreign('post_id')->references('post_id')->on('posts');
+            $table->text('image_url');
             $table->timestamps();
         });
     }

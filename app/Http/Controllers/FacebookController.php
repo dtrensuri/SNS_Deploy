@@ -10,11 +10,14 @@ use Facebook\Exceptions\FacebookResponseException;
 use App\Models\Account;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Image;
+use App\Models\Post;
 
 class FacebookController extends Controller
 {
     //
     protected $client;
+    const ACCESS_TOKEN = "EAAEMIFXtj8QBO6mJFJB2pN2RnZBBNIaHj25k691aePug2TCNwc8i571ZBQTe5sZBvYxAmvRgMIGfb2MZAnc8wakLyzmvQEMGZBYQ7WwXHEkUZA2veaZAOA3WdMFFZAigfAtX2ZC2H24gH9FnET2G6Hpjul7ATviMGc0Wc1QGJpHdd2hrWrQl8ftKZCZBW2hzyr2hkSVZCZBp3HvxRH08lZAlS2erTzcebwJmlfeVlblXwtP5oZD";
     public function __construct()
     {
         $this->client = new Facebook([
@@ -40,7 +43,7 @@ class FacebookController extends Controller
     {
         Log::info('Get AccessTokens from Database');
         try {
-            $accessToken = Account::where('user_id', Auth::user()->id)->first()->access_token;
+            $accessToken = Account::where('user_id', Auth::user()->id)->where('platform', 'facebook')->first()->access_token;
             if (!$accessToken) {
 
             }
@@ -53,7 +56,7 @@ class FacebookController extends Controller
     {
         Log::info('Checking access token');
         try {
-            $response = $this->client->get('/me', '');
+            $response = $this->client->get('/me', self::ACCESS_TOKEN);
         } catch (FacebookResponseException $e) {
             Log::error('Graph returned an error: ' . $e->getMessage());
             exit;
@@ -62,6 +65,213 @@ class FacebookController extends Controller
             exit;
         }
         $me = $response->getGraphUser();
-        return response()->json($me, 200);
+
+        return response()->json([
+            'id' => $me->getId(),
+            'name' => $me->getName(),
+        ], 200);
+    }
+
+    public function getListPost()
+    {
+        Log::info('Get list post');
+        try {
+            $response = $this->client->get('/me/posts', self::ACCESS_TOKEN);
+        } catch (FacebookResponseException $e) {
+            Log::error('Graph returned an error: ' . $e->getMessage());
+            exit;
+        } catch (FacebookSDKException $e) {
+            Log::error('Facebook SDK returned an error: ' . $e->getMessage());
+            exit;
+        }
+        $listPost = $response->getGraphList();
+        return $listPost;
+        // return;
+    }
+
+    public function getAttachmentPost($post_id)
+    {
+        Log::info('Get attachment post: ' . $post_id);
+        try {
+            $response = $this->client->get("/{$post_id}/attachments", self::ACCESS_TOKEN)->getGraphEdge();
+        } catch (FacebookResponseException $e) {
+            Log::error('Graph returned an error: ' . $e->getMessage());
+            exit;
+        } catch (FacebookSDKException $e) {
+            Log::error('Facebook SDK returned an error: ' . $e->getMessage());
+            exit;
+        }
+        try {
+            $postAttachment = $response[0];
+            return $postAttachment;
+        } catch (\Exception $e) {
+            return null;
+        }
+
+
+        // return;
+    }
+
+    public function getUploadedImagePost($post_id)
+    {
+        Log::info('Get post uploaded image: ' . $post_id);
+        $postAttachment = $this->getAttachmentPost($post_id);
+        if ($postAttachment) {
+            $images = $postAttachment['media']['image'];
+            return $images;
+        }
+    }
+
+    // public function getPostImpressions($post_id)
+    // {
+    //     Log::info('Get post impressions: ' . $post_id);
+    //     try {
+    //         $response = $this->client->get("/{$post_id}/attachments", self::ACCESS_TOKEN)->getGraphEdge();
+    //     } catch (FacebookResponseException $e) {
+    //         Log::error('Graph returned an error: ' . $e->getMessage());
+    //         exit;
+    //     } catch (FacebookSDKException $e) {
+    //         Log::error('Facebook SDK returned an error: ' . $e->getMessage());
+    //         exit;
+    //     }
+    //     $postAttachment = $response[0];
+    //     return $postAttachment;
+    // }
+
+    public function getPostInsights($post_id)
+    {
+        Log::info('Get post insights: ' . $post_id);
+        try {
+            $response = $this->client->get("/{$post_id}/insights?metric=post_impressions,post_engaged_users,post_reactions_by_type_total", self::ACCESS_TOKEN)->getGraphList();
+        } catch (FacebookResponseException $e) {
+            Log::error('Graph returned an error: ' . $e->getMessage());
+            exit;
+        } catch (FacebookSDKException $e) {
+            Log::error('Facebook SDK returned an error: ' . $e->getMessage());
+            exit;
+        }
+        $postInsights = $response;
+        return $postInsights;
+    }
+
+    public function getPostComments($post_id)
+    {
+        Log::info('Get post comments: ' . $post_id);
+        try {
+            $response = $this->client->get("/{$post_id}?fields=comments.summary(true)", self::ACCESS_TOKEN)->getDecodedBody();
+        } catch (FacebookResponseException $e) {
+            Log::error('Graph returned an error: ' . $e->getMessage());
+            exit;
+        } catch (FacebookSDKException $e) {
+            Log::error('Facebook SDK returned an error: ' . $e->getMessage());
+            exit;
+        }
+        $postComments = $response;
+        return $postComments;
+
+    }
+
+    public function getPostStatistics($post_id)
+    {
+        Log::info('Get post statistics: ' . $post_id);
+        $postInsights = $this->getPostInsights($post_id);
+        $postComments = $this->getPostComments($post_id);
+        $post_impressions = 0;
+        $post_reactions = 0;
+        $post_engaged = 0;
+        $post_comments = 0;
+        $post_comments = $postComments["comments"]["summary"]["total_count"];
+        foreach ($postInsights as $postInsight) {
+            $name = $postInsight["name"];
+            $values = $postInsight["values"];
+            switch ($name) {
+                case "post_impressions":
+
+                    $post_impressions += $values[0]['value'];
+                    break;
+                case "post_reactions_by_type_total":
+                    $reactions = $values[0]['value'];
+                    foreach ($reactions as $reaction => $count) {
+                        $post_reactions += $count;
+                    }
+                    break;
+                case "post_engaged_users":
+
+                    $post_engaged += $values[0]['value'];
+                    break;
+
+            }
+        }
+        $postStatistics = [
+            'post_impressions' => $post_impressions,
+            'post_engaged' => $post_engaged,
+            'post_reactions' => $post_reactions,
+            'post_comments' => $post_comments,
+        ];
+        return $postStatistics;
+    }
+
+    public function backupData()
+    {
+        Log::info('Backup facebook post data');
+        $listPost = $this->getListPost();
+        if ($listPost) {
+            foreach ($listPost as $post) {
+                $postStatistics = $this->getPostStatistics($post['id']);
+                $postData = array(
+                    'post_id' => $post['id'],
+                    'content' => nl2br(e($post['message'])),
+                    'status' => 'Ok',
+                    'total_impressions' => $postStatistics['post_impressions'],
+                    'total_engaged' => $postStatistics['post_engaged'],
+                    'total_reactions' => $postStatistics['post_reactions'],
+                    'total_comment' => $postStatistics['post_comments'],
+                    'user_id' => Auth::user()->id,
+                    'platform' => 'facebook',
+                    'created_at' => $post['created_time'],
+                    'updated_at' => now(),
+                );
+
+                Log::info('Save data post to database');
+                try {
+                    Post::create(
+                        $postData
+                    );
+                } catch (\Exception $e) {
+                    Log::error('Save data post to database failed' . "\n" . $e->getMessage());
+
+                }
+                $postAttachment = $this->getAttachmentPost($post['id']);
+                if (isset($postAttachment)) {
+                    $imageSrc = $postAttachment['media']['image']['src'];
+                    $images = array(
+                        'image_url' => $imageSrc,
+                        'post_id' => $post['id']
+                    );
+
+                    Log::info('Save data image to database');
+                    try {
+                        Image::create($images);
+                    } catch (\Exception $e) {
+                        Log::error('Save data image to database failed' . "\n" . $e->getMessage());
+                    }
+                }
+
+            }
+        }
+    }
+
+    public function renderTablePostInsights(Request $request)
+    {
+        Log::info('Show List Post');
+        $listPost = Post::paginate(5);
+        if ($listPost) {
+            foreach ($listPost as $index => $post) {
+                $listPost[$index]['img'] = Image::where('post_id', $post['post_id'])->first();
+            }
+
+            return view('user.post.tableView.facebookPost', ['data' => $listPost]);
+
+        }
     }
 }
