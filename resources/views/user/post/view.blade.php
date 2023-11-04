@@ -1,6 +1,7 @@
 @extends('layouts.user')
 @section('content')
     <div class="main-content">
+
         <div class="container p-4">
             <header class="p-2">
                 <h3 style="font-weight: 600">一覧</h3>
@@ -8,10 +9,11 @@
             <div class="select-platform col-2">
                 <div class="platform-box">
                     <select name="select-platform" id="select-platform" class="p-2 w-100" title="Select platform">
-                        <option value="instagram" selected>Instagram</option>
-                        <option value="facebook">Facebook</option>
-                        <option value="twitter">Twitter</option>
+                        <option value="instagram" {{ $platform == 'instagram' ? 'selected' : '' }}>Instagram</option>
+                        <option value="facebook" {{ $platform == 'facebook' ? 'selected' : '' }}>Facebook</option>
+                        <option value="twitter" {{ $platform == 'twitter' ? 'selected' : '' }}>Twitter</option>
                     </select>
+
                 </div>
             </div>
             <div class="table-data-post">
@@ -27,9 +29,13 @@
                         </tr>
                     </thead>
                     <tbody id="table-body">
+                        {{ view('user.post.table-post', ['data' => $postData]) }}
                     </tbody>
                 </table>
                 {{ view('component.loading') }}
+                @if (isset($postData))
+                    {{ $postData->links('pagination::default') }}
+                @endif
             </div>
         </div>
     </div>
@@ -38,37 +44,45 @@
             const selectPlatform = $("#select-platform");
             const tableBody = $("#table-body");
             const loadingElement = $("#loading");
+            const csrfToken = $('meta[name="csrf-token"]').attr('content');
 
-            function fetchData(platform) {
-                if (platform === 'facebook') {
-                    $.ajax({
-                        url: "{{ route('user.table.fb-post-info') }}",
-                        method: 'get',
-                        data: {
-                            platform: platform
-                        },
-                        success: function(response) {
-                            loadingElement.removeClass('loading');
-                            tableBody.html(response);
-                        },
-                        error: function() {
-                            loadingElement.removeClass('loading');
-                            alert('Error fetching data.');
-                        }
-                    });
-                }
-            }
 
-            selectPlatform.change(function() {
-                const selectedPlatform = selectPlatform.val();
+            function showLoading() {
                 if (!loadingElement.hasClass("loading")) {
                     loadingElement.addClass("loading");
                 }
-                tableBody.html('');
-                fetchData(selectedPlatform);
-            });
+            }
 
-            fetchData(selectPlatform.val());
+            function hideLoading() {
+                loadingElement.removeClass('loading');
+            }
+
+
+            function fetchUrl(platform) {
+                $.ajax({
+                    url: "{{ route('user.get-url-platform') }}",
+                    method: 'post',
+                    data: {
+                        _token: csrfToken,
+                        platform: platform
+                    },
+                    success: function(response) {
+                        const url = response.url;
+                        window.location.href = url;
+                    },
+                    error: function() {
+                        return null;
+                    }
+                });
+            }
+
+
+            selectPlatform.change(async function() {
+                const selectedPlatform = selectPlatform.val();
+                showLoading();
+                tableBody.html('');
+                fetchUrl(selectedPlatform);
+            });
         });
     </script>
 @endsection

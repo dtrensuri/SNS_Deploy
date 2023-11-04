@@ -57,12 +57,13 @@
                     <div class="collapse show menu-collapse" id="collapse-posted">
                         <ul>
                             <li class="collapse-item row">
-                                <a href="{{ route('user.view') }}" class=" nav-link text-white" aria-current="page">
+                                <a href="{{ route('user.view-post', ['platform' => 'facebook']) }}"
+                                    class=" nav-link text-white" aria-current="page">
                                     <h5>一覧</h5>
                                 </a>
                             </li>
                             <li class="collapse-item row">
-                                <a href="{{ route('user.create') }}" class=" nav-link text-white" aria-current="page">
+                                <a href="" class=" nav-link text-white" aria-current="page">
                                     <h5>作成</h5>
                                 </a>
                             </li>
@@ -82,14 +83,10 @@
                     <div class="collapse show menu-collapse" id="collapse-analysis">
                         <ul>
                             <li class="collapse-item row">
-                                <a href="{{ route('user.view') }}" class=" nav-link text-white" aria-current="page">
-                                    <h5>一覧</h5>
-                                </a>
+
                             </li>
                             <li class="collapse-item row">
-                                <a href="{{ route('user.create') }}" class=" nav-link text-white" aria-current="page">
-                                    <h5>作成</h5>
-                                </a>
+
                             </li>
                         </ul>
                     </div>
@@ -111,9 +108,7 @@
                                 </a>
                             </li>
                             <li class="collapse-item row">
-                                <a href="{{ route('user.create') }}" class=" nav-link text-white" aria-current="page">
-                                    <h5>作成</h5>
-                                </a>
+
                             </li>
                         </ul>
                     </div>
@@ -138,8 +133,8 @@
                 <div class="dropdown p-2 nav-item acount">
                     <div class="nav-item d-flex">
                         <div class="px-2">Avatar</div>
-                        <div class="dropdown-toggle d-flex align-items-center" type="button"
-                            data-bs-toggle="dropdown" aria="false">
+                        <div class="dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown"
+                            aria="false">
 
                             <h5 class="px-2">
                                 @php

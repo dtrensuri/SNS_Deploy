@@ -260,16 +260,17 @@ class FacebookController extends Controller
             }
         }
     }
-
-    public function renderTablePostInsights(Request $request)
+    public function getPostInsightsDB(Request $request)
     {
-        Log::info('Show List Post');
-        $listPost = Post::paginate(5);
+        $listPost = Post::where('platform', 'facebook')->paginate(5);
+
         if ($listPost) {
             foreach ($listPost as $index => $post) {
                 $listPost[$index]['img'] = Image::where('post_id', $post['post_id'])->first();
             }
-            return view('table.facebookPost', ['data' => $listPost]);
+            return $listPost;
         }
+
     }
+
 }
