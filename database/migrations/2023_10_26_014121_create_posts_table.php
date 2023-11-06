@@ -22,7 +22,7 @@ return new class extends Migration {
             $table->integer('total_share')->nullable()->default(0);
             $table->string('post_id')->unique();
             $table->unsignedBigInteger('channel_id')->default(0);
-            // $table->foreign('channel_id')->references('id')->on('channels');
+            $table->foreign('channel_id')->references('id')->on('channels');
             $table->text('link')->nullable();
             $table->string('platform');
             $table->dateTime('scheduled_time')->nullable();

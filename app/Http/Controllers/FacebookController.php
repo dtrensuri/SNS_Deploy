@@ -17,7 +17,7 @@ class FacebookController extends Controller
 {
     //
     protected $client;
-    const ACCESS_TOKEN = "EAAEMIFXtj8QBO6mJFJB2pN2RnZBBNIaHj25k691aePug2TCNwc8i571ZBQTe5sZBvYxAmvRgMIGfb2MZAnc8wakLyzmvQEMGZBYQ7WwXHEkUZA2veaZAOA3WdMFFZAigfAtX2ZC2H24gH9FnET2G6Hpjul7ATviMGc0Wc1QGJpHdd2hrWrQl8ftKZCZBW2hzyr2hkSVZCZBp3HvxRH08lZAlS2erTzcebwJmlfeVlblXwtP5oZD";
+    const ACCESS_TOKEN = "EAAEMIFXtj8QBOZB3GytdDBiK8wfife5i8pINHHvDfzBgwbwNQ9C6AV0IPZAlx63I7RWO2c6upd3RNRApwff9S6tarFomyMljeLDPkgnfsMIqQxWZCZCsoZCE2yZChzqzhIYhCOO1CQfzoI55veMay8sWBEYjL1DvvZCHt3QgPMtnsThV0ZCLpBPwZBTJfEDX6mGLjVVkgAaeXQHTtV22F7Hy4ZBZBRcVxlJmm6jZALLzZAY8ZD";
     public function __construct()
     {
         $this->client = new Facebook([
@@ -221,15 +221,18 @@ class FacebookController extends Controller
                 $postData = array(
                     'post_id' => $post['id'],
                     'content' => nl2br(e($post['message'])),
-                    'status' => 'Ok',
+                    'status' => 'Đã đăng',
                     'total_impressions' => $postStatistics['post_impressions'],
                     'total_engaged' => $postStatistics['post_engaged'],
                     'total_reactions' => $postStatistics['post_reactions'],
                     'total_comment' => $postStatistics['post_comments'],
+                    'channel_id' => '2',
                     'user_id' => Auth::user()->id,
                     'platform' => 'facebook',
-                    'created_at' => $post['created_time'],
+                    'created_at' => new \DateTime($post['created_time']),
+                    'posted_time' => new \DateTime($post['created_time']),
                     'updated_at' => now(),
+                    'link' => "https://facebook.com/{$post['id']}"
                 );
 
                 Log::info('Save data post to database');
