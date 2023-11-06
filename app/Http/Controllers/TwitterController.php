@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\Log;
 class TwitterController extends Controller
 {
 
-
     private $client;
     private $id_user;
 
@@ -132,7 +131,6 @@ class TwitterController extends Controller
         return $this->client->tweet()->create()
             ->performRequest(['text' => $content]);
     }
-
 
 
     public function testTweet(Request $request)

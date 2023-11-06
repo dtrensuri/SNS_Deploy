@@ -229,8 +229,8 @@ class FacebookController extends Controller
                     'channel_id' => '2',
                     'user_id' => Auth::user()->id,
                     'platform' => 'facebook',
-                    'created_at' => new \DateTime($post['created_time']),
-                    'posted_time' => new \DateTime($post['created_time']),
+                    'created_at' => $post['created_time'],
+                    'posted_time' => $post['created_time'],
                     'updated_at' => now(),
                     'link' => "https://facebook.com/{$post['id']}"
                 );

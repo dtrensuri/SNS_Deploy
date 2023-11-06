@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\PostController;
-
+use App\Http\Controllers\FacebookController;
 
 Route::get('/', function () {
     return redirect(route('user.view-post', ['platform' => 'facebook']));
@@ -29,7 +29,11 @@ Route::name('user')->middleware('auth')->group(function () {
     Route::name('.setting')->prefix('setting')->group(function () {
         Route::get('channel-settings', [SettingController::class, 'createChannelSetting'])->name('.channel');
     });
+
+    Route::get('/fb-backup', [FacebookController::class, 'backupData']);
 });
+
+
 // Route::prefix('callback')->group(function () {
 //     Route::get('facebook-login', [FacebookController::class, 'loginCallback'])->name('facebook-login-callback');
 // });

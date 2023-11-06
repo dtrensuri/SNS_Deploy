@@ -48,7 +48,7 @@
 
     <div class="p-2 mx-2">
         <div class="form-group form-check">
-            <input type="checkbox" class="form-check-input" id="all" name="all">
+            <input type="checkbox" class="form-check-input" id="all" disabled name="all">
             <label class="form-check-label" for="exampleCheck1">--ALL--</label>
         </div>
         <div class="form-group form-check">
@@ -56,11 +56,11 @@
             <label class="form-check-label" for="exampleCheck1">Twitter</label>
         </div>
         <div class="form-group form-check">
-            <input type="checkbox" class="form-check-input" id="facebook" name="facebook">
+            <input type="checkbox" class="form-check-input" id="facebook" disabled name="facebook">
             <label class="form-check-label" for="exampleCheck1">Facebook</label>
         </div>
         <div class="form-group form-check">
-            <input type="checkbox" class="form-check-input" id="instagram" name="instagram">
+            <input type="checkbox" class="form-check-input" id="instagram" disabled name="instagram">
             <label class="form-check-label" for="exampleCheck1">Instagram</label>
         </div>
 
