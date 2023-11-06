@@ -78,6 +78,8 @@ class TwitterController extends Controller
                     // $newImage->created_at = now();
                     // $newImage->updated_at = now();
                     // $newImage->save();
+                } else {
+                    $newTweet->link = 'https://twitter.com/o_thanh24509' . $id_post;
                 }
                 $newTweet->save();
             }
