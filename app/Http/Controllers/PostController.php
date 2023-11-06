@@ -33,6 +33,31 @@ class PostController extends Controller
         return view('user.post.view', ['postData' => $postData, 'platform' => $platform]);
     }
 
+    public function viewCreatePlatform(Request $request, string $platform)
+    {
+        $fb = new FacebookController();
+        $postData = null;
+        switch ($platform) {
+            case "facebook":
+                $postData = $fb->getPostInsightsDB($request);
+                break;
+            case "twitter":
+                break;
+            case "instagram":
+                break;
+            default:
+                break;
+
+        }
+
+        return view('user.post.create', ['postData' => $postData, 'platform' => $platform]);
+    }
+
+    public function getCreateModal(Request $request)
+    {
+        return view('modal.createPost');
+    }
+
     public function getUrl(Request $request)
     {
         $platform = $request->input('platform');

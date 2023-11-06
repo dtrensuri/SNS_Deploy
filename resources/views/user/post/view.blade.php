@@ -49,6 +49,9 @@
             </div>
         </div>
     </div>
+@endsection
+
+@push('script')
     <script>
         $(document).ready(function() {
             const selectPlatform = $("#select-platform");
@@ -95,4 +98,4 @@
             });
         });
     </script>
-@endsection
+@endpush

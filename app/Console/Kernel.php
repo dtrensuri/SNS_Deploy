@@ -13,8 +13,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->command('update:fb-post-database')
-            ->everyMinute(30);
+        $schedule->command('update:fb-post-database')->everyMinute(20);
     }
 
     /**
