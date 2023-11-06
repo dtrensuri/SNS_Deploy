@@ -37,7 +37,7 @@ class TwitterController extends Controller
 
         $newTweet->user_id = Auth::user()->id;
         $newTweet->created_at = now();
-        $newTweet->channel_id = '0';
+        $newTweet->channel_id = '1';
         $newTweet->platform = 'twitter';
 
         $title = $request->input('title');
