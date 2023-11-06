@@ -38,6 +38,19 @@ class PostController extends Controller
         return null;
     }
 
+    public function twGetPostInsightsDB(Request $request)
+    {
+        $listPost = Post::where('platform', 'twitter')->paginate(5);
+
+        if ($listPost) {
+            foreach ($listPost as $index => $post) {
+                $listPost[$index]['img'] = Image::where('post_id', $post['post_id'])->first();
+            }
+            return $listPost;
+        }
+        return null;
+    }
+
 
     public function getPostInsightsDB(Request $request)
     {
@@ -61,6 +74,7 @@ class PostController extends Controller
                 $postData = $this->fbGetPostInsightsDB($request);
                 break;
             case "twitter":
+                $postData = $this->twGetPostInsightsDB($request);
                 break;
             case "instagram":
                 break;

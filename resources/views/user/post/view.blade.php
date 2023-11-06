@@ -34,6 +34,7 @@
                                     echo view('table.facebookPost', ['data' => $postData]);
                                     break;
                                 case 'twitter':
+                                    echo view('table.twitterPost', ['data' => $postData]);
                                     break;
                                 case 'instagram':
                                 default:
