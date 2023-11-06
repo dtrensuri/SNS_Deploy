@@ -15,7 +15,7 @@ class Post extends Model
         'total_shares',
         'platform',
         'scheduled_time',
-        'posted_at',
+        'posted_time',
         'status',
         'post_id',
         'channel_id',

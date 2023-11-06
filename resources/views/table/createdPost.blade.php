@@ -9,7 +9,7 @@
             </td>
             <td>
                 @php
-                    $time = new \DateTime($postDetail->posted_at);
+                    $time = new \DateTime($postDetail->posted_time);
                     echo $time->format('d/m/Y');
                 @endphp
             </td>

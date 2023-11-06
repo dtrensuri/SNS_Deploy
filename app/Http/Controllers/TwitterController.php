@@ -69,7 +69,7 @@ class TwitterController extends Controller
                 $text = $response->data->text;
                 $imageLink = $this->extractImageLinkFromText($text);
                 $newTweet->post_id = $id_post;
-                $newTweet->posted_at = now();
+                $newTweet->posted_time = now();
                 $newTweet->status = 'Ok';
                 if ($imageLink) {
                     $newTweet->link = $imageLink;
