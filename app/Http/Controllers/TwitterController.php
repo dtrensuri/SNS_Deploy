@@ -33,10 +33,11 @@ class TwitterController extends Controller
     public function createNewTweet(Request $request)
     {
         $newTweet = new Post();
-        $newImage = new Image();
+        // $newImage = new Image();
 
         $newTweet->user_id = Auth::user()->id;
         $newTweet->created_at = now();
+        $newTweet->channel_id = '0';
         $newTweet->platform = 'twitter';
 
         $title = $request->input('title');
