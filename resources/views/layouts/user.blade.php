@@ -34,7 +34,7 @@
 
 <body>
     <div id="app" class="d-flex row">
-        <div class="col-md-2 main-sidebar d-flex flex-column flex-shrink-0 p-3 text-white ">
+        <div id="main-sidebar" class="col-md-2 main-sidebar d-flex flex-column flex-shrink-0 p-3 text-white ">
             <h3>
                 <a href="/"
                     class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
@@ -117,7 +117,7 @@
             <hr>
         </div>
 
-        <div class="col-md-10 p-0 m-0">
+        <div id="main" class="col-md-10 p-0 m-0">
             <div class="nav-bar main-navbar d-flex justify-content-between">
                 <div class="dropdown p-2 nav-item ">
                     <div class="nav-item dropdown-toggle d-flex align-items-center" type="button"
@@ -133,8 +133,8 @@
                 <div class="dropdown p-2 nav-item acount">
                     <div class="nav-item d-flex">
                         <div class="px-2">Avatar</div>
-                        <div class="dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown"
-                            aria="false">
+                        <div class="dropdown-toggle d-flex align-items-center" type="button"
+                            data-bs-toggle="dropdown" aria="false">
 
                             <h5 class="px-2">
                                 @php

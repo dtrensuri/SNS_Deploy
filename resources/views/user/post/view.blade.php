@@ -1,10 +1,9 @@
 @extends('layouts.user')
 @section('content')
     <div class="main-content">
-
-        <div class="container p-4">
-            <header class="p-2">
-                <h3 style="font-weight: 600">一覧</h3>
+        <div class="container pt-2">
+            <header class="pb-1">
+                <h4 style="font-weight: 600">一覧</h4>
             </header>
             <div class="select-platform col-2">
                 <div class="platform-box">
@@ -29,7 +28,18 @@
                         </tr>
                     </thead>
                     <tbody id="table-body">
-                        {{ view('user.post.table-post', ['data' => $postData]) }}
+                        @php
+                            switch ($platform) {
+                                case 'facebook':
+                                    echo view('user.post.table-post', ['data' => $postData]);
+                                    break;
+                                case 'twitter':
+                                    break;
+                                case 'instagram':
+                                default:
+                                    break;
+                            }
+                        @endphp
                     </tbody>
                 </table>
                 {{ view('component.loading') }}
