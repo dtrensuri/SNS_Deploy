@@ -5,10 +5,11 @@
             <header class="pb-1">
                 <h4 style="font-weight: 600">作成</h4>
             </header>
-            <div class="row d-flex align-items-center">
+            <div class="row d-flex align-items-center pb-2">
                 <div class="select-platform col-2">
                     <div class="platform-box">
                         <select name="select-platform" id="select-platform" class="p-2 w-100" title="Select platform">
+                            <option value="">All</option>
                             <option value="instagram" {{ $platform == 'instagram' ? 'selected' : '' }}>Instagram</option>
                             <option value="facebook" {{ $platform == 'facebook' ? 'selected' : '' }}>Facebook</option>
                             <option value="twitter" {{ $platform == 'twitter' ? 'selected' : '' }}>Twitter</option>
@@ -27,7 +28,8 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                                onclick="closeModal()">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
@@ -41,27 +43,18 @@
                 <table id="datatable" class="table table-hover datatable">
                     <thead>
                         <tr>
-                            <th scope="col">公開日時</th>
-                            <th scope="col">投稿内容</th>
-                            <th scope="col">インプ</th>
-                            <th scope="col">リーチ</th>
-                            <th scope="col">いいね</th>
-                            <th scope="col">コメント</th>
+                            <th scope="col">Ngày tạo</th>
+                            <th scope="col">Ngày đăng</th>
+                            <th scope="col">Nền tảng</th>
+                            <th scope="col">Channel</th>
+                            <th scope="col">Người đăng</th>
+                            <th scope="col">Nội dung</th>
+                            <th scope="col">Đường dẫn</th>
+                            <th scope="col">Trạng thái</th>
                         </tr>
                     </thead>
                     <tbody id="table-body">
-                        @php
-                            switch ($platform) {
-                                case 'facebook':
-                                    echo view('user.post.table-post', ['data' => $postData]);
-                                    break;
-                                case 'twitter':
-                                    break;
-                                case 'instagram':
-                                default:
-                                    break;
-                            }
-                        @endphp
+                        {{ view('table.createdPost', ['data' => $postData]) }}
                     </tbody>
                 </table>
             </div>
@@ -72,6 +65,10 @@
 
 @push('script')
     <script>
+        function closeModal() {
+            $('#exampleModal').modal('hide');
+        }
+
         $(document).ready(function() {
             $('body').on('click', '.openaddmodal', function() {
                 var id = $(this).data('id');
@@ -93,65 +90,56 @@
                     },
                 });
             });
+        });
+    </script>
+@endpush
 
-            // $('body').on('submit', '.formsubmit', function(e) {
-            //     e.preventDefault();
-            //     $.ajax({
-            //         url: $(this).attr('action'),
-            //         data: new FormData(this),
-            //         type: 'POST',
-            //         contentType: false,
-            //         cache: false,
-            //         processData: false,
-            //         beforeSend: function() {
-            //             $('.spinner').html('<i class="fa fa-spinner fa-spin"></i>')
-            //         },
-            //         success: function(data) {
-            //             if (data.status == 400) {
-            //                 $('.spinner').html('');
+@push('script')
+    <script>
+        $(document).ready(function() {
+            const selectPlatform = $("#select-platform");
+            const tableBody = $("#table-body");
+            const loadingElement = $("#loading");
+            const csrfToken = $('meta[name="csrf-token"]').attr('content');
 
-            //             }
-            //             if (data.status == 200) {
-            //                 $('.spinner').html('');
-            //                 $('.add_modal').modal('hide');
 
-            //                 $("#datatable").DataTable().ajax.reload();
-            //             }
-            //         }
-            //     });
-            // });
+            function showLoading() {
+                if (!loadingElement.hasClass("loading")) {
+                    loadingElement.addClass("loading");
+                }
+            }
 
-            // $('body').on('click', '.publishToProfile', function() {
-            //     var id = $(this).data('id');
-            //     $.ajax({
-            //         url: "{{ url('page') }}",
-            //         type: 'POST',
-            //         headers: {
-            //             'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            //         },
-            //         data: {
-            //             id: id
-            //         },
-            //         success: function(data) {
-            //             if (data.status == 200) {
-            //                 $.confirm({
-            //                     title: 'Success!',
-            //                     content: data.msg,
-            //                     autoClose: 'cancelAction|3000',
-            //                     buttons: {
-            //                         cancelAction: function(e) {}
-            //                     }
-            //                 })
-            //             }
-            //             if (data.status == 400) {
-            //                 $.alert({
-            //                     title: 'Alert!',
-            //                     content: data.msg,
-            //                 });
-            //             }
-            //         }
-            //     });
-            // });
+            function hideLoading() {
+                loadingElement.removeClass('loading');
+            }
+
+
+            function fetchUrl(platform) {
+                $.ajax({
+                    url: "{{ route('user.get-url-platform') }}",
+                    method: 'post',
+                    data: {
+                        _token: csrfToken,
+                        platform: platform,
+                        action: "create",
+                    },
+                    success: function(response) {
+                        const url = response.url;
+                        window.location.href = url;
+                    },
+                    error: function() {
+                        return null;
+                    }
+                });
+            }
+
+
+            selectPlatform.change(async function() {
+                const selectedPlatform = selectPlatform.val();
+                showLoading();
+                tableBody.html('');
+                fetchUrl(selectedPlatform);
+            });
         });
     </script>
 @endpush

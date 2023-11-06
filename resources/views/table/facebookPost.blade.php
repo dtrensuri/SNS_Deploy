@@ -3,7 +3,7 @@
         <td>
             @php
                 $time = new \DateTime($postDetail->created_at);
-                echo $time->format('d/m/Y H:i:s');
+                echo $time->format('d/m/Y');
             @endphp
         </td>
         <td>

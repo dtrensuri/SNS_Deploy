@@ -63,8 +63,8 @@
                                 </a>
                             </li>
                             <li class="collapse-item row">
-                                <a href="{{ route('user.create-post', ['platform' => 'facebook']) }}"
-                                    class=" nav-link text-white" aria-current="page">
+                                <a href="{{ route('user.create-post') }}" class=" nav-link text-white"
+                                    aria-current="page">
                                     <h5>作成</h5>
                                 </a>
                             </li>

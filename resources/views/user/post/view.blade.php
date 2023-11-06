@@ -31,7 +31,7 @@
                         @php
                             switch ($platform) {
                                 case 'facebook':
-                                    echo view('user.post.table-post', ['data' => $postData]);
+                                    echo view('table.facebookPost', ['data' => $postData]);
                                     break;
                                 case 'twitter':
                                     break;

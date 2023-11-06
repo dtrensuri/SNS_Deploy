@@ -1,5 +1,6 @@
-<form action="{{ route('user.handle-create-post') }}" method="POST" class="formsubmit d-flex"
+<form action="{{ route('user.handle-create-post') }}" method="POST" class="formsubmit d-flex" id="form-create-post"
     enctype="multipart/form-data">
+
     <div class="">
         @csrf
         @if (isset($data) && !empty($data->id))
@@ -13,7 +14,7 @@
         </div>
 
         <div class="form-group">
-            <label for="description">Description</label>
+            <label for="description">Content</label>
             <textarea rows="5" class="form-control" name="description"></textarea>
         </div>
 
@@ -32,25 +33,16 @@
                     <img id="frame" src="" class="img-fluid" />
                 </div>
             </div>
-            <script>
-                function preview() {
-                    frame.src = URL.createObjectURL(event.target.files[0]);
-                }
-
-                function clearImage() {
-                    document.getElementById('formFile').value = null;
-                    frame.src = "";
-                }
-            </script>
+            <script></script>
         </div>
 
         <div class="form-group">
             <button type="submit" class="btn btn-primary">
                 Create
             </button>
-            <div class="btn btn-default">
+            <button type="button" class="btn btn-default" onclick="cancelAndClearForm()">
                 Cancel
-            </div>
+            </button>
         </div>
     </div>
 
@@ -75,3 +67,18 @@
     </div>
 
 </form>
+<script>
+    function preview() {
+        frame.src = URL.createObjectURL(event.target.files[0]);
+    }
+
+    function clearImage() {
+        document.getElementById('formFile').value = null;
+        frame.src = "";
+    }
+
+    function cancelAndClearForm() {
+        $('#exampleModal').modal('hide');
+        document.getElementById('form-create-post').reset();
+    }
+</script>

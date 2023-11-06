@@ -93,6 +93,14 @@
                             border: 2px;
                             border-style: groove;
                             border-color: #D4D4D4;
+
+                            &.truncate-cell {
+                                max-width: 150px;
+                                white-space: nowrap;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                            }
+
                         }
                     }
                 }

@@ -15,8 +15,11 @@ class Post extends Model
         'total_shares',
         'platform',
         'scheduled_time',
+        'posted_at',
         'status',
         'post_id',
+        'channel_id',
+        'link',
     ];
 
     public function user()
