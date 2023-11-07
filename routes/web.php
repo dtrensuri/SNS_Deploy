@@ -45,7 +45,7 @@ Route::middleware('auth')->group(function () {
         Route::prefix('facebook')->group(function () {
             Route::get('redirect', function () {
                 return Socialite::driver('facebook')->redirect();
-            })->name('');
+            })->name('fb.redirect');
 
             Route::get('callback', function () {
                 $user = Socialite::driver('facebook')->user();

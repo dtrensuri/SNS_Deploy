@@ -11,13 +11,19 @@
                                 onclick="showPlatformModal()">
                                 <i class="bi bi-lightning-charge-fill pe-1"></i>Connect
                             </button>
-                            <div class="d-none d-sm-inline-block"><button type="button"
-                                    class="min-w-xl-70px btn-hover-facebook mr-2 my-1 my-xl-0 btn btn-light btn-md">
+                            <div class="d-none d-sm-inline-block">
+                                <a type="button"
+                                    class="min-w-xl-70px btn-hover-facebook mr-2 my-1 my-xl-0 btn btn-light btn-md"
+                                    id = "add-fb-page" href="{{ route('fb.redirect') }}">
                                     <i class="bi bi-facebook pe-1"></i>Facebook
-                                    (Page)</button><button type="button"
+                                    (Page)
+                                </a>
+                                <button type="button"
                                     class="min-w-xl-70px btn-hover-instagram mr-2 my-1 my-xl-0 btn btn-light btn-md">
                                     <i class="bi bi-instagram pe-1"></i>Instagram
-                                    (Business)</button></div>
+                                    (Business)
+                                </button>
+                            </div>
                         </div>
                         <div class="col-md d-flex flex-wrap align-items-center justify-content-xl2-end text-xl2-right">
                             <div
@@ -156,7 +162,6 @@
                     },
                 });
             };
-
             $(document).ready(function() {
                 getAddedChannel();
             });
