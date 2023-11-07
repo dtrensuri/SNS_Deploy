@@ -30,6 +30,15 @@ class FacebookController extends Controller
     public function loginCallback(Request $request)
     {
         $helper = $this->client->getRedirectLoginHelper();
+
+        $state = $request->input('state');
+
+        $storedState = session('facebook_state');
+
+        if (!$state || $state !== $storedState) {
+            return redirect()->route('login')->with('error', 'CSRF validation failed.');
+        }
+
         try {
             $accessToken = $helper->getAccessToken();
         } catch (FacebookResponseException $e) {
@@ -39,20 +48,26 @@ class FacebookController extends Controller
             echo 'Facebook SDK returned an error: ' . $e->getMessage();
             exit;
         }
+
         if (isset($accessToken)) {
             dd($accessToken);
         }
     }
+
     public function loginFacebook()
     {
         $helper = $this->client->getRedirectLoginHelper();
         $permissions = ['email', 'user_likes'];
+
         $state = csrf_token();
+
         session(['facebook_state' => $state]);
+
         $loginUrl = $helper->getLoginUrl('https://dtrensuri-laravel-test-c70aeea3cdb5.herokuapp.com/public/auth/facebook/callback', $permissions, $state);
+
+
         return redirect()->away($loginUrl);
     }
-
 
 
 
