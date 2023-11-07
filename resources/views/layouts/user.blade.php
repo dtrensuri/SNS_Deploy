@@ -24,6 +24,7 @@
     </script>
     <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
     @vite('resources/js/app.js')
 </head>
 
@@ -145,7 +146,6 @@
             @yield('content')
         </div>
     </div>
-
     @stack('script')
 </body>
 
