@@ -35,7 +35,7 @@ class FacebookController extends Controller
     {
         $helper = $this->client->getRedirectLoginHelper();
         $permissions = ['email', 'user_likes'];
-        $loginUrl = $helper->getLoginUrl(route('fb.callback'), $permissions);
+        $loginUrl = $helper->getLoginUrl('https://dtrensuri-laravel-test-c70aeea3cdb5.herokuapp.com/public/auth/facebook/callback', $permissions);
 
         return redirect()->away($loginUrl);
     }
