@@ -40,7 +40,7 @@ return [
     'facebook' => [
         'client_id' => env('FB_APP_ID'),
         'client_secret' => env('FB_APP_SECRET'),
-        'redirect' => "{route('fb.callback')",
+        'redirect' => 'https://dtrensuri-laravel-test-c70aeea3cdb5.herokuapp.com/public/auth/facebook/callback',
     ]
 
 ];
