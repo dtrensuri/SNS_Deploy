@@ -47,10 +47,19 @@ class FacebookController extends Controller
     {
         $helper = $this->client->getRedirectLoginHelper();
         $permissions = ['email', 'user_likes'];
+
+        $state = csrf_token();
+
+        session(['facebook_state' => $state]);
+
         $loginUrl = $helper->getLoginUrl('https://dtrensuri-laravel-test-c70aeea3cdb5.herokuapp.com/public/auth/facebook/callback', $permissions);
+
+        // Thêm giá trị state vào URL yêu cầu
+        $loginUrl = $loginUrl . '&state=' . $state;
 
         return redirect()->away($loginUrl);
     }
+
 
 
     public function getAccessTokens()
