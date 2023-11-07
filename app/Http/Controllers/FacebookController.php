@@ -34,7 +34,6 @@ class FacebookController extends Controller
     public function loginFacebook()
     {
         $helper = $this->client->getRedirectLoginHelper();
-
         $permissions = ['email', 'user_likes'];
         $loginUrl = $helper->getLoginUrl(route('fb.callback'), $permissions);
 
