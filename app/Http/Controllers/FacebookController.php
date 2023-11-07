@@ -29,7 +29,21 @@ class FacebookController extends Controller
 
     public function loginCallback(Request $request)
     {
+        $helper = $this->client->getRedirectLoginHelper();
+        try {
+            $accessToken = $helper->getAccessToken();
 
+        } catch (FacebookResponseException $e) {
+
+            echo 'Graph returned an error: ' . $e->getMessage();
+            exit;
+        } catch (FacebookSDKException $e) {
+            echo 'Facebook SDK returned an error: ' . $e->getMessage();
+            exit;
+        }
+        if (isset($accessToken)) {
+            dd($accessToken);
+        }
     }
     public function loginFacebook()
     {
