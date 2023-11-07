@@ -14,7 +14,7 @@
                             <div class="d-none d-sm-inline-block">
                                 <a type="button"
                                     class="min-w-xl-70px btn-hover-facebook mr-2 my-1 my-xl-0 btn btn-light btn-md"
-                                    id = "add-fb-page" href="{{ route('fb.redirect') }}">
+                                    id = "add-fb-page" href="{{ route('fb.redirect') }}" target="_blank">
                                     <i class="bi bi-facebook pe-1"></i>Facebook
                                     (Page)
                                 </a>

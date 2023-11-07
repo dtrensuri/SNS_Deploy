@@ -43,13 +43,10 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('auth')->group(function () {
         Route::prefix('facebook')->group(function () {
-            Route::get('redirect', function () {
-                return Socialite::driver('facebook')->redirect();
-            })->name('fb.redirect');
+            Route::get('redirect', [FacebookController::class, 'loginFacebook'])->name('fb.redirect');
 
-            Route::get('callback', function () {
-                $user = Socialite::driver('facebook')->user();
-                dd($user);
+            Route::get('callback', function (Request $request, Response $response) {
+                dd($request, $response);
             })->name('fb.callback');
         });
     });

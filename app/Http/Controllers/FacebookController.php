@@ -34,10 +34,13 @@ class FacebookController extends Controller
     public function loginFacebook()
     {
         $helper = $this->client->getRedirectLoginHelper();
+
         $permissions = ['email', 'user_likes'];
-        $loginUrl = $helper->getLoginUrl(route('facebook-login-callback'), $permissions);
-        echo $loginUrl;
+        $loginUrl = $helper->getLoginUrl(route('fb.callback'), $permissions);
+
+        return redirect()->away($loginUrl);
     }
+
 
     public function getAccessTokens()
     {
@@ -121,22 +124,6 @@ class FacebookController extends Controller
             return $images;
         }
     }
-
-    // public function getPostImpressions($post_id)
-    // {
-    //     Log::info('Get post impressions: ' . $post_id);
-    //     try {
-    //         $response = $this->client->get("/{$post_id}/attachments", self::ACCESS_TOKEN)->getGraphEdge();
-    //     } catch (FacebookResponseException $e) {
-    //         Log::error('Graph returned an error: ' . $e->getMessage());
-    //         exit;
-    //     } catch (FacebookSDKException $e) {
-    //         Log::error('Facebook SDK returned an error: ' . $e->getMessage());
-    //         exit;
-    //     }
-    //     $postAttachment = $response[0];
-    //     return $postAttachment;
-    // }
 
     public function getPostInsights($post_id)
     {
