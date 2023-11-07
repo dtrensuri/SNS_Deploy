@@ -12,12 +12,12 @@
                                 <i class="bi bi-lightning-charge-fill pe-1"></i>Connect
                             </button>
                             <div class="d-none d-sm-inline-block">
-                                <a type="button"
+                                <button type="button"
                                     class="min-w-xl-70px btn-hover-facebook mr-2 my-1 my-xl-0 btn btn-light btn-md"
-                                    id = "add-fb-page" href="{{ route('fb.redirect') }}" target="_blank">
+                                    id = "add-fb-page" onclick="facebookLogin()" target="_blank">
                                     <i class="bi bi-facebook pe-1"></i>Facebook
                                     (Page)
-                                </a>
+                                </button>
                                 <button type="button"
                                     class="min-w-xl-70px btn-hover-instagram mr-2 my-1 my-xl-0 btn btn-light btn-md">
                                     <i class="bi bi-instagram pe-1"></i>Instagram
@@ -165,6 +165,37 @@
             $(document).ready(function() {
                 getAddedChannel();
             });
+
+            (function(d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) {
+                    return;
+                }
+                js = d.createElement(s);
+                js.id = id;
+                js.src = "https://connect.facebook.net/en_US/sdk.js";
+                fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));
+
+
+            window.fbAsyncInit = function() {
+
+                FB.init({
+                    appId: '{{ env('FB_APP_ID') }}',
+                    xfbml: true,
+                    version: '{{ env('FB_GRAPH_VERSION') }}'
+                }); <
+                function facebookLogin() {
+                    FB.login(function(response) {
+                        if (response.status === 'connected') {
+                            console.log(response);
+                        } else {
+
+                        }
+                    });
+                }
+
+            };
         </script>
     @endpush
 @endsection

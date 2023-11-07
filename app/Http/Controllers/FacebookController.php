@@ -30,15 +30,11 @@ class FacebookController extends Controller
     public function loginCallback(Request $request)
     {
         $helper = $this->client->getRedirectLoginHelper();
-
         $state = $request->input('state');
-
         $storedState = session('facebook_state');
-
         if (!$state || $state !== $storedState) {
             return redirect()->route('login')->with('error', 'CSRF validation failed.');
         }
-
         try {
             $accessToken = $helper->getAccessToken();
         } catch (FacebookResponseException $e) {
@@ -48,7 +44,6 @@ class FacebookController extends Controller
             echo 'Facebook SDK returned an error: ' . $e->getMessage();
             exit;
         }
-
         if (isset($accessToken)) {
             dd($accessToken);
         }
