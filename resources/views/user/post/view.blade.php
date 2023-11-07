@@ -74,7 +74,7 @@
 
             function fetchUrl(platform) {
                 $.ajax({
-                    url: "{{ route('user.get-url-platform') }}",
+                    url: "{{ route('get-url-platform') }}",
                     method: 'post',
                     data: {
                         _token: csrfToken,

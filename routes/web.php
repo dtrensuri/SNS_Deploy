@@ -6,6 +6,7 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\FacebookController;
 use App\Http\Controllers\ChannelController;
+use Laravel\Socialite\Facades\Socialite;
 
 Route::get('/', function () {
     return redirect(route('user.view-post', ['platform' => 'facebook']));
@@ -21,23 +22,39 @@ Route::name('guest')->group(function () {
 Route::name('user')->middleware('auth')->group(function () {
     Route::get('post/{platform}', [PostController::class, 'viewPostPlatform'])->name('.view-post');
     Route::get('create/{platform?}', [PostController::class, 'viewCreatePlatform'])->name('.create-post');
-
-    Route::get('get-create-modal', [PostController::class, 'getCreateModal'])->name('.get-create-modal');
-    Route::get('get-platform-modal', [ChannelController::class, 'getPlatformModal'])->name('.get-platform-modal');
-
-    Route::post('/get-url-platform', [PostController::class, "getUrl"])->name('.get-url-platform');
-
     Route::post('/create-post', [PostController::class, "createPost"])->name('.handle-create-post');
-
     Route::get('/logout', [AuthController::class, 'logout'])->name('.logout');
+
     Route::name('.setting')->prefix('setting')->group(function () {
         Route::get('channel-settings', [SettingController::class, 'createChannelSetting'])->name('.channel');
     });
-
     Route::get('/fb-backup', [FacebookController::class, 'backupData']);
 });
 
 
-// Route::prefix('callback')->group(function () {
-//     Route::get('facebook-login', [FacebookController::class, 'loginCallback'])->name('facebook-login-callback');
-// });
+Route::middleware('auth')->group(function () {
+    Route::get('get-create-modal', [PostController::class, 'getCreateModal'])->name('get-create-modal');
+    Route::get('get-platform-modal', [ChannelController::class, 'getPlatformModal'])->name('get-platform-modal');
+    Route::post('/get-url-platform', [PostController::class, "getUrl"])->name('get-url-platform');
+    Route::name('channel')->group(function () {
+        Route::get('all-channels', [ChannelController::class, 'getAllChannels'])->name('.all');
+        Route::get('added-channel', [ChannelController::class, 'renderTableAddedChannel'])->name('.added');
+    });
+
+    Route::prefix('auth')->group(function () {
+        Route::prefix('facebook')->group(function () {
+            Route::get('redirect', function () {
+                return Socialite::driver('facebook')->redirect();
+            })->name('');
+
+            Route::get('callback', function () {
+                $user = Socialite::driver('facebook')->user();
+                dd($user);
+            })->name('fb.callback');
+        });
+    });
+});
+
+Route::get('chinh-sach-rieng-tu', function () {
+    return "Chinh sach rieng tu FB";
+})->name('fb.chinh-sach');

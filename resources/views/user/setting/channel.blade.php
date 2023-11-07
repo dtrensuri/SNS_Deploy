@@ -73,58 +73,8 @@
                                             <th tabindex="0" class="text-right pr-3 w-100px">ACTIONS</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="w-40px"><a target="_blank" class=""
-                                                    href="https://twitter.com/o_thanh2502">
-                                                    <div class="sc-bczRLJ kYQZlO">
-                                                        <div class="symbol symbol-no-variant symbol-circle"><span
-                                                                class="symbol-label font-weight-bold font-size-h5"><i
-                                                                    class="fa-brands fa-twitter text-white icon-md"></i></span><i
-                                                                class="symbol-badge symbol-badge-bottom bg-success"></i>
-                                                        </div>
-                                                    </div>
-                                                </a></td>
-                                            <td class="pl-1">
-                                                <div>
-                                                    <div class="text-elipsis text-muted">1713821507598880768</div><a
-                                                        target="_blank" class="font-weight-bold text-elipsis"
-                                                        href="https://twitter.com/o_thanh2502">o_thanh2502</a>
-                                                    <div class="font-size-xs line-height-sm mt-1 text-elipsis text-muted">
-                                                        <time datetime="1697446316000">2023-10-16 15:51:56</time>,
-                                                        Dothanhcao2502
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="pl-1 d-none d-md-table-cell">
-                                                <div>
-                                                    <div class="text-elipsis text-muted"><span>-</span></div>
-                                                </div>
-                                            </td>
-                                            <td class="text-center d-none d-sm-table-cell">
-                                                <i class="bi bi-check-circle icon-md text-success"></i>
-                                            </td>
-                                            <td class="text-center d-none d-sm-table-cell">
-                                                <i class="bi bi-check-circle icon-md text-success"></i>
-                                            </td>
-                                            <td class="text-center d-none d-sm-table-cell">
-                                                <i class="bi bi-check-circle icon-md text-success"></i>
-                                            </td>
-                                            <td class="text-center d-none d-md-table-cell">
-                                                <i class="bi bi-ban icon-md "></i>
-                                            </td>
-                                            <td class="text-right pr-3">
-                                                <div class="dropdown-inline dropdown">
-                                                    <button type="button"
-                                                        class="btn-icon btn-circle d-none d-md-inline-block btn btn-light btn-md">
-                                                        <i class="  bi bi-pencil icon-md"></i></button>
-                                                    <button type="button"
-                                                        class="btn-icon btn-circle my-1 ml-2 btn btn-light btn-md">
-                                                        <i class="bi bi-three-dots"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
+                                    <tbody id="added-channel">
+
                                     </tbody>
                                 </table>
                             </div>
@@ -159,8 +109,7 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="modal-channel" tabindex="-1" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
+        <div class="modal fade" id="modal-channel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog container" role="document">
                 <div class="modal-content ">
                     <div class="modal-header">
@@ -181,7 +130,7 @@
         <script>
             function showPlatformModal() {
                 $.ajax({
-                    url: "{{ route('user.get-platform-modal') }}",
+                    url: "{{ route('get-platform-modal') }}",
                     type: 'GET',
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
@@ -193,6 +142,24 @@
                     },
                 });
             };
+
+            function getAddedChannel() {
+                $.ajax({
+                    url: "{{ route('channel.added') }}",
+                    type: 'GET',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+
+                    success: function(data) {
+                        $('#added-channel').html(data);
+                    },
+                });
+            };
+
+            $(document).ready(function() {
+                getAddedChannel();
+            });
         </script>
     @endpush
 @endsection

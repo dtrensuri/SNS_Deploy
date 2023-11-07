@@ -78,7 +78,7 @@
                     $('.modal-title').text("Update");
                 }
                 $.ajax({
-                    url: "{{ route('user.get-create-modal') }}",
+                    url: "{{ route('get-create-modal') }}",
                     type: 'GET',
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
@@ -116,7 +116,7 @@
 
             function fetchUrl(platform) {
                 $.ajax({
-                    url: "{{ route('user.get-url-platform') }}",
+                    url: "{{ route('get-url-platform') }}",
                     method: 'post',
                     data: {
                         _token: csrfToken,

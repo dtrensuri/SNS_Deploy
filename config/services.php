@@ -37,4 +37,10 @@ return [
     //     'redirect' => 'http://example.com/callback-url',
     // ],
 
+    'facebook' => [
+        'client_id' => env('FB_APP_ID'),
+        'client_secret' => env('FB_APP_SECRET'),
+        'redirect' => "{route('fb.callback')",
+    ]
+
 ];
