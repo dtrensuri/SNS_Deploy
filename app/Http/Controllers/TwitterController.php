@@ -97,7 +97,6 @@ class TwitterController extends Controller
     function extractImageLinkFromText($text)
     {
         $pattern = '/https:\/\/t\.co\/\w+/';
-
         if (preg_match($pattern, $text, $matches)) {
             return $matches[0];
         }

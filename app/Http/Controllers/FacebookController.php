@@ -17,7 +17,7 @@ class FacebookController extends Controller
 {
     //
     protected $client;
-    const ACCESS_TOKEN = "EAAEMIFXtj8QBOZB3GytdDBiK8wfife5i8pINHHvDfzBgwbwNQ9C6AV0IPZAlx63I7RWO2c6upd3RNRApwff9S6tarFomyMljeLDPkgnfsMIqQxWZCZCsoZCE2yZChzqzhIYhCOO1CQfzoI55veMay8sWBEYjL1DvvZCHt3QgPMtnsThV0ZCLpBPwZBTJfEDX6mGLjVVkgAaeXQHTtV22F7Hy4ZBZBRcVxlJmm6jZALLzZAY8ZD";
+    const ACCESS_TOKEN = "EAAEMIFXtj8QBO6poiBuoXNB20ZA6zLEHj8Qr2wr5vkmTDtcoYGZCaBEYDhYIiWQgg8b2oHYTtlJykO9pSD9HtrmZCjxI2GBUT8SHZBf11H8ZAPYVNJDKHtzhQGHlJZBhmXUZBdMNtd55MofwuJ94r7TPE9OmZBwqBU6PZAz8mZCAwVOfLqcnOe6O05ipVkZB2SZBVhRuIAy5DnIZB6jKbTOZBnpyZBbHmMuWDmb3MtZBj05Ht7CB";
     public function __construct()
     {
         $this->client = new Facebook([

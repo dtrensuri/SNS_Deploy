@@ -6,8 +6,9 @@
                 <div class="card-header py-3 py-lg-5 h-auto px-6 px-lg-9">
                     <div class="row-marginless-half align-items-center flex-wrap flex-root row">
                         <div class="col-xl2-auto col-xl3-6 d-flex flex-wrap align-items-center">
-                            <button type="button" class="min-w-xl-70px mr-2 my-1 my-xl-0 btn btn-success btn-md"
-                                data-toggle="modal" data-target="#modal-channel" id="show-modal">
+                            <button type="button" class="min-w-xl-70px mr-2 my-1 my-xl-0 btn btn-success btn-md openmodal"
+                                data-toggle="modal" data-target="#modal-channel" id="show-modal"
+                                onclick="showPlatformModal()">
                                 <i class="bi bi-lightning-charge-fill pe-1"></i>Connect
                             </button>
                             <div class="d-none d-sm-inline-block"><button type="button"
@@ -158,16 +159,40 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="modal-channel" tabindex="-1" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog container" role="document">
+                <div class="modal-content ">
+                    <div class="modal-header">
+                        <div class="d-flex align-items-center modal-title h4">Connect</div><button type="button"
+                            class="btn-icon btn-circle btn btn-light btn-md"><i
+                                class="fa-solid fa-xmark icon-lg"></i></button>
+                    </div>
+                    <div class="modal-body" style="min-height: 450px; overflow:scroll" id="model-body">
 
-        @extends('user.setting.modalChannel')
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
     </div>
     @push('script')
         <script>
-            $(document).ready(function() {
-                $('body').on('click', '#show-modal', function() {
-                    $('#modal-channel').modal('show');
+            function showPlatformModal() {
+                $.ajax({
+                    url: "{{ route('user.get-platform-modal') }}",
+                    type: 'GET',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+
+                    success: function(data) {
+                        $('.modal-body').html(data);
+                        $('#modal-channel').modal('show');
+                    },
                 });
-            });
+            };
         </script>
     @endpush
 @endsection
