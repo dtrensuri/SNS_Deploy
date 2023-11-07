@@ -32,9 +32,7 @@ class FacebookController extends Controller
         $helper = $this->client->getRedirectLoginHelper();
         try {
             $accessToken = $helper->getAccessToken();
-
         } catch (FacebookResponseException $e) {
-
             echo 'Graph returned an error: ' . $e->getMessage();
             exit;
         } catch (FacebookSDKException $e) {
