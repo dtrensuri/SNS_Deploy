@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class RedirectIfNotHttps
+class HttpsProtocol
 {
     /**
      * Handle an incoming request.
@@ -16,9 +16,8 @@ class RedirectIfNotHttps
     public function handle(Request $request, Closure $next): Response
     {
         if (!$request->secure()) {
-            return redirect()->secure($request->path());
+            return redirect()->secure($request->getRequestUri());
         }
-
         return $next($request);
     }
 }
