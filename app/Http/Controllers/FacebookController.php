@@ -35,7 +35,7 @@ class FacebookController extends Controller
         $state = $request->input('state');
         $storedState = session('facebook_state');
         if (!$state || $state !== $storedState) {
-            return redirect()->route('login')->with('error', 'CSRF validation failed.');
+            return redirect()->secure_url('login')->with('error', 'CSRF validation failed.');
         }
         try {
             $accessToken = $helper->getAccessToken();
