@@ -49,6 +49,6 @@ class AuthController extends Controller
     {
         Auth::logout();
         $request->session()->regenerate();
-        return redirect()->route('guest.login_page');
+        return redirect(secure_url('guest.login_page'));
     }
 }
