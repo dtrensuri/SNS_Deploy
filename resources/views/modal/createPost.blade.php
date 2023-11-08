@@ -56,7 +56,7 @@
             <label class="form-check-label" for="exampleCheck1">Twitter</label>
         </div>
         <div class="form-group form-check">
-            <input type="checkbox" class="form-check-input" id="facebook" disabled name="facebook">
+            <input type="checkbox" class="form-check-input" id="facebook" name="facebook">
             <label class="form-check-label" for="exampleCheck1">Facebook</label>
         </div>
         <div class="form-group form-check">

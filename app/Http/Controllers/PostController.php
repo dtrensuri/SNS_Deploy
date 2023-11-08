@@ -129,11 +129,20 @@ class PostController extends Controller
     {
         if ($request->input('twitter') == 'on') {
             try {
-                $response = $this->twitter->createNewTweet($request);
-                return redirect()->back();
+                $response['twitter'] = $this->twitter->createNewTweet($request);
             } catch (\Exception $e) {
                 return response()->json(['message' => 'Failed to create post.'], 500);
             }
+        }
+        if ($request->input('facebook') == 'on') {
+            try {
+                $response['facebook'] = $this->facebook->createNewPost($request);
+            } catch (\Exception $e) {
+                return response()->json(['message' => 'Failed to create post.', 'error' => $e->getMessage()], 500);
+            }
+        }
+        if (isset($response)) {
+            return response()->json($response);
         }
     }
 

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Facebook\Facebook;
 use Facebook\Exceptions\FacebookSDKException;
 use Facebook\Exceptions\FacebookResponseException;
@@ -17,7 +19,7 @@ class FacebookController extends Controller
 {
     //
     protected $client;
-    const ACCESS_TOKEN = "EAAEMIFXtj8QBO6poiBuoXNB20ZA6zLEHj8Qr2wr5vkmTDtcoYGZCaBEYDhYIiWQgg8b2oHYTtlJykO9pSD9HtrmZCjxI2GBUT8SHZBf11H8ZAPYVNJDKHtzhQGHlJZBhmXUZBdMNtd55MofwuJ94r7TPE9OmZBwqBU6PZAz8mZCAwVOfLqcnOe6O05ipVkZB2SZBVhRuIAy5DnIZB6jKbTOZBnpyZBbHmMuWDmb3MtZBj05Ht7CB";
+    const ACCESS_TOKEN = "EAAEMIFXtj8QBO87OohQVkmcBu5OJZBaiZCAYABAWq2PwYPytzfkvtEsincIZC3DsXTMgMPprGo9jpRZCct0UlOCZCD2OPQo8lURnJaZB8Mu0RRr4kxZCSyjKsAbOyZCIqnNlTZC0E9jWZAAk2eN5MUnhTEZAi3DWuYG4kKbA8ONDFcJN9eQD2uLctp3ctaVwmynzWZCgospvHMfFSLIiNPMZD";
     public function __construct()
     {
         $this->client = new Facebook([
@@ -59,8 +61,6 @@ class FacebookController extends Controller
         session(['facebook_state' => $state]);
 
         $loginUrl = $helper->getLoginUrl('https://dtrensuri-laravel-test-c70aeea3cdb5.herokuapp.com/public/auth/facebook/callback', $permissions, $state);
-
-
         return redirect()->away($loginUrl);
     }
 
@@ -72,7 +72,6 @@ class FacebookController extends Controller
         try {
             $accessToken = Account::where('user_id', Auth::user()->id)->where('platform', 'facebook')->first()->access_token;
             if (!$accessToken) {
-
             }
         } catch (\Exception $e) {
 
@@ -272,6 +271,150 @@ class FacebookController extends Controller
                 }
 
             }
+        }
+    }
+
+    public function refreshData(Request $request)
+    {
+        Log::info('Refresh facebook post data');
+        $listPost = $this->getListPost();
+        if ($listPost) {
+            foreach ($listPost as $post) {
+                $postStatistics = $this->getPostStatistics($post['id']);
+
+                $postData = array(
+                    'post_id' => $post['id'],
+                    'content' => nl2br(e($post['message'])),
+                    'status' => 'Đã đăng',
+                    'total_impressions' => $postStatistics['post_impressions'],
+                    'total_engaged' => $postStatistics['post_engaged'],
+                    'total_reactions' => $postStatistics['post_reactions'],
+                    'total_comment' => $postStatistics['post_comments'],
+                    'channel_id' => '2',
+                    'user_id' => Auth::user()->id,
+                    'platform' => 'facebook',
+                    'created_at' => $post['created_time'],
+                    'posted_time' => $post['created_time'],
+                    'updated_at' => now(),
+                    'link' => "https://facebook.com/{$post['id']}"
+                );
+
+                Log::info('Save data post to database');
+                try {
+                    Post::updateOrInsert(
+                        ['post_id' => $post['id']],
+                        $postData
+                    );
+                } catch (\Exception $e) {
+                    Log::error('Save data post to database failed' . "\n" . $e->getMessage());
+                }
+                $postAttachment = $this->getAttachmentPost($post['id']);
+                if (isset($postAttachment)) {
+                    $imageSrc = $postAttachment['media']['image']['src'];
+                    $images = array(
+                        'image_url' => $imageSrc,
+                        'post_id' => $post['id']
+                    );
+
+                    Log::info('Save data image to database');
+                    try {
+                        Image::updateOrInsert(
+                            ['post_id' => $post['id']],
+                            $images
+                        );
+                    } catch (\Exception $e) {
+                        Log::error('Save data image to database failed' . "\n" . $e->getMessage());
+                    }
+                }
+            }
+        }
+    }
+
+    public function createPostWithMedia($content, $tmpFilePath, $accessToken)
+    {
+        try {
+            $response = $this->client->post('/me/photos', [
+                'message' => $content,
+                'source' => $tmpFilePath,
+                'access_token' => $accessToken,
+            ]);
+            dd($response);
+            $postInfo = $response->getDecodedBody();
+            return $postInfo;
+        } catch (FacebookResponseException $e) {
+            Log::error('Facebook API Error: ' . $e->getMessage());
+            throw new Exception('Failed to create post with media', 500);
+        } catch (FacebookSDKException $e) {
+            Log::error('Facebook SDK Error: ' . $e->getMessage());
+            throw new Exception('Failed to create post with media', 500);
+        }
+    }
+
+    public function createPostWithoutMedia($content)
+    {
+        Log::info('Create post without media');
+
+        try {
+            $response = $this->client->post('/me/feed', [
+                'message' => $content,
+                'access_token' => self::ACCESS_TOKEN,
+            ]);
+            $postInfo = $response->getDecodedBody();
+            return $postInfo;
+        } catch (FacebookResponseException $e) {
+            Log::error('Lỗi Facebook API: ' . $e->getMessage());
+            return null;
+        } catch (FacebookSDKException $e) {
+            Log::error('Lỗi Facebook SDK: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    // public function getPageAccessToken(Request $request){
+    //     $response = $this->client->
+    // }
+
+    public function createNewPost(Request $request)
+    {
+        $accessToken = self::ACCESS_TOKEN;
+        $newPost = new Post();
+        $newPost->user_id = Auth::user()->id;
+        $newPost->created_at = now();
+        $newPost->channel_id = '1';
+        $newPost->platform = 'facebook';
+        $title = $request->input('title');
+        $description = $request->input('description');
+
+        if (empty($title) && empty($description)) {
+            return response()->json(['message' => 'Nội dung post hiện trống.'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $content = trim("$title\n$description");
+
+        $newPost->content = $content;
+        try {
+            if ($request->hasFile('image')) {
+                $file = $request->file('image');
+                $tmpFilePath = $file->getRealPath();
+                $response = $this->createPostWithMedia($content, $tmpFilePath, $accessToken);
+
+                $imageLink = '';
+            } else {
+                $response = $this->createPostWithoutMedia($content);
+
+            }
+            if (isset($response['id'])) {
+                $id_post = $response['id'];
+                $newPost->post_id = $id_post;
+                $newPost->posted_time = now();
+                $newPost->status = 'Đã đăng';
+                $newPost->save();
+            }
+
+            return response()->json($response, Response::HTTP_OK);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['message' => 'An error occurred.'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
