@@ -22,11 +22,12 @@ class TwitterController extends Controller
     {
         $this->client = new Client([
             'account_id' => '',
-            'access_token' => '1713798306512752640-OnPkNTXZ2h8FszTi1uNuK596SFaPjG',
-            'access_token_secret' => 'ASD2rHZNXQRjWEna3SFMXdlIzm9RwDY1G1NjGY0z1uyCA',
-            'consumer_key' => 'C5YJkupd2HXnTslf9ZcjN35G5',
-            'consumer_secret' => 'mBn15GmkQuMZsKjPhj1QqRKcaXDWxPifJevKNKxVHD2ACNM7PD',
-            'bearer_token' => 'AAAAAAAAAAAAAAAAAAAAAByyqgEAAAAAcBU4aPmoqajxMHlavC2fhC5gMI0%3DDiapUazd74FkczW3cNuVDHlUT0sAom6rlpwxHu0Ub348VLyolj',
+            'access_token' => '1457738824378118144-640SotydewNkRGw58YE6ZuTYWKKBBo',
+            'access_token_secret' => 'suBbigD2VInKGNrh98R2ViN8jYcWYojG2G5PYmG3fgD7L',
+            'consumer_key' => '1hV5uZjXQo14u6znXedxav0Hk',
+            'consumer_secret' => 'qOmSNNvs5KGZGSSGL0P7lQoBrK1n7M16ouVutg9yvCaBukLMZX',
+            'bearer_token' => 'AAAAAAAAAAAAAAAAAAAAAI34YAEAAAAAy8bhZY1kJeC%2B0UiRqY%2B3o%2F777tU%3DrAT6PQmHvjWvPg58MGU6WroVOuivKU5j38nT5swIAttqCEYAZp
+            ',
         ]);
     }
     public function createNewTweet(Request $request)
@@ -144,9 +145,26 @@ class TwitterController extends Controller
                         'text' => 'Test Tweet... ' . $date->format(\DateTimeInterface::ATOM)
                     ]
                 );
-            dd($response);
+            return response()->json($response);
         } catch (\Exception $e) {
             echo $e->getMessage();
         }
+    }
+
+    public function checkAuthenticate(Request $request)
+    {
+        $response = $this->client->userMeLookup()->performRequest();
+        return response()->json($response);
+    }
+
+    public function getMyFollower(Request $request)
+    {
+        try {
+            $response = $this->client->userFollows()->getFollowing()->performRequest();
+            return response()->json($response);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()]);
+        }
+
     }
 }

@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FacebookController;
+use App\Http\Controllers\TwitterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,5 +19,12 @@ use App\Http\Controllers\FacebookController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::prefix('twitter')->group(function () {
+    Route::get('/find-me', [TwitterController::class, 'checkAuthenticate']);
+    Route::get('/test-tweet', [TwitterController::class, 'testTweet']);
+    Route::get('/get-my-follower', [TwitterController::class, 'getMyFollower']);
+});
+
 
 Route::get('/user', [FacebookController::class, 'checkAccessToken']);

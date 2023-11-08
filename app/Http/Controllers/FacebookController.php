@@ -418,4 +418,43 @@ class FacebookController extends Controller
         }
     }
 
+    public function autoUpdateFacebookData()
+    {
+        Log::info('Call API to update Facebook data');
+        $posts = Post::all();
+        foreach ($posts as $post) {
+            // Log::info($post->post_id);
+            try {
+                $engaged = $this->getTotalEngagedUsers($post->post_id);
+                if ($engaged) {
+                    $post->total_engaged = $engaged;
+                }
+            } catch (\Exception $e) {
+                Log::error('Lỗi call api getTotalEngagedUsers facebook' . $e->getMessage());
+                return true;
+            }
+            try {
+                $impressions = $this->getTotalImpressions($post->post_id);
+                if ($impressions) {
+                    $post->total_impressions = $impressions;
+                }
+            } catch (\Exception $e) {
+                Log::error('Lỗi call api getTotalImpressions facebook');
+                return true;
+            }
+            try {
+                $reactions = $this->getTotalReactions($post->post_id);
+                if ($reactions) {
+                    $post->total_reactions = $reactions;
+                }
+            } catch (\Exception $e) {
+                Log::error('Lỗi call api getTotalReactions facebook');
+                return true;
+            }
+            $post->save();
+        }
+        return true;
+    }
+
+
 }
