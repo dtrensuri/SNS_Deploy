@@ -176,8 +176,6 @@ class FacebookController extends Controller
         } catch (\Exception $e) {
             return null;
         }
-
-
         // return;
     }
 
