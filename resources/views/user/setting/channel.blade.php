@@ -137,7 +137,7 @@
 
             function addFacebookPageChannel() {
                 window.location.href =
-                    '{{ env('APP_ENV') == 'production' ? secure_url(route('fb.user_account')) : route('fb.user_account') }}';
+                    '{{ env('APP_ENV') == 'production' ? secure_url(route('fb.pages_account')) : route('fb.pages_account') }}';
 
             }
         </script>
