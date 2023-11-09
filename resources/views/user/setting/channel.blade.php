@@ -159,7 +159,7 @@
                         console.log(response);
                     });
                 }, {
-                    scope: 'public_profile,email,pages_manage_ads,pages_manage_metadata,pages_read_engagement,pages_read_user_content,pages_manage_posts,pages_manage_engagement,pages_messaging,pages_show_list,read_insights,email,instagram_basic,instagram_content_publish,instagram_manage_messages,instagram_manage_comments,instagram_manage_insights,instagram_shopping_tag_products,publish_to_groups'
+                    scope: 'public_profile,email'
                 });
             }
 
