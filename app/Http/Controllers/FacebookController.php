@@ -63,7 +63,6 @@ class FacebookController extends Controller
         $pdata = $helper->getPersistentDataHandler();
         $pdata->set('state', $request->get('state'));
         try {
-            dd($helper);
             $accessToken = $helper->getAccessToken();
         } catch (FacebookResponseException $e) {
             echo 'Graph returned an error: ' . $e->getMessage();
