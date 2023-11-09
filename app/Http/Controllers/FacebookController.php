@@ -77,7 +77,7 @@ class FacebookController extends Controller
             $response = $this->checkAccessToken($value);
             return response()->json([
                 $response,
-                'access_token' => $accessToken
+                'access_token' => $accessToken->getValue()
             ]);
         }
     }
