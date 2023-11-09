@@ -137,7 +137,7 @@
         <script>
             function showPlatformModal() {
                 $.ajax({
-                    url: "{{ secure_url('get-platform-modal') }}",
+                    url: "{{ secure_url(route('get-platform-modal')) }}",
                     type: 'GET',
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
@@ -152,7 +152,7 @@
 
             function getAddedChannel() {
                 $.ajax({
-                    url: "{{ secure_url('channel.added') }}",
+                    url: "{{ secure_url(route('channel.added')) }}",
                     type: 'GET',
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'

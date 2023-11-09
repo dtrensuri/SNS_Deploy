@@ -1,6 +1,6 @@
 @auth
     <script>
-        window.location.href = "{{ secure_url('index') }}";
+        window.location.href = "{{ secure_url(route('index')) }}";
     </script>
 @endauth
 

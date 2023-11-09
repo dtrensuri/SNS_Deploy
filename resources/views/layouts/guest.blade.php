@@ -48,11 +48,11 @@
                         <!-- Authentication Links -->
                         @guest
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ secure_url('login') }}">{{ __('Login') }}</a>
+                                <a class="nav-link" href="{{ secure_url(route('login')) }}">{{ __('Login') }}</a>
                             </li>
                             @if (Route::has('register'))
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ secure_url('register') }}">{{ __('Register') }}</a>
+                                    <a class="nav-link" href="{{ secure_url(route('register')) }}">{{ __('Register') }}</a>
                                 </li>
                             @endif
                         @else
@@ -63,13 +63,13 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ secure_url('logout') }}"
+                                    <a class="dropdown-item" href="{{ secure_url(route('logout')) }}"
                                         onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
                                         {{ __('Logout') }}
                                     </a>
 
-                                    <form id="logout-form" action="{{ secure_url('logout') }}" method="POST"
+                                    <form id="logout-form" action="{{ secure_url(route('logout')) }}" method="POST"
                                         class="d-none">
                                         @csrf
                                     </form>
