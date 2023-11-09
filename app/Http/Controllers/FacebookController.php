@@ -64,8 +64,7 @@ class FacebookController extends Controller
         $pdata->set('state', $request->get('state'));
         try {
             $accessToken = $helper->getAccessToken();
-            $value = $accessToken->getValue();
-            $this->checkAccessToken($value);
+
         } catch (FacebookResponseException $e) {
             echo 'Graph returned an error: ' . $e->getMessage();
             exit;
@@ -74,7 +73,9 @@ class FacebookController extends Controller
             exit;
         }
         if (isset($accessToken)) {
-            return $accessToken;
+            $value = $accessToken->getValue();
+            $response = $this->checkAccessToken($value);
+            return response()->json($response);
         }
     }
 
