@@ -98,7 +98,7 @@ class FacebookController extends Controller
             "pages_show_list",
             "read_insights",
         ];
-        $loginUrl = $helper->getLoginUrl($this->callback, $permissions);
+        $loginUrl = $pdata->getLoginUrl($this->callback, $permissions);
         return redirect()->away($loginUrl);
     }
 
@@ -116,18 +116,6 @@ class FacebookController extends Controller
         }
         if ($response) {
             dd($response);
-        }
-    }
-
-    public function getAccessTokens()
-    {
-        Log::info('Get AccessTokens from Database');
-        try {
-            $accessToken = Account::where('user_id', Auth::user()->id)->where('platform', 'facebook')->first()->access_token;
-            if (!$accessToken) {
-            }
-        } catch (\Exception $e) {
-
         }
     }
 
