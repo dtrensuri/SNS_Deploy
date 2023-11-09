@@ -129,12 +129,10 @@
     </div>
     @push('script')
         <script>
-            // Gọi hàm khi người dùng bấm vào nút "add-fb-page"
-            $('#add-fb-page').click(function() {
-                facebookLoginAndRetrievePages();
-            });
-
             window.fbAsyncInit = function() {
+                $('#add-fb-page').click(function() {
+                    facebookLoginAndRetrievePages();
+                });
                 FB.init({
                     appId: "{{ env('FB_APP_ID') }}",
                     cookie: true,
