@@ -183,47 +183,50 @@
             }
 
             function facebookLoginAndRetrievePages() {
-                FB.login(function(response) {
-                    if (response.authResponse) {
-                        console.log(response.authResponse.accessToken);
-                    }
-                }, {
-                    scope: 'public_profile,email'
-                });
-            }
+                function facebookLoginAndRetrievePages() {
+                    FB.login(function(response) {
+                        if (response.authResponse) {
+                            FB.api('/me/accounts', 'GET', function(pagesResponse) {
+                                console.log(pagesResponse);
+                            });
+                        } else {
+                            console.log('Đăng nhập không thành công');
+                        }
+                    });
+                }
 
-            function getAddedChannel() {
-                $.ajax({
-                    url: "{{ env('APP_ENV') == 'production' ? secure_url(route('channel.added')) : route('channel.added') }}",
-                    type: 'GET',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    success: function(data) {
-                        $('#added-channel').html(data);
-                    },
-                    error: function(xhr, status, error) {
-                        console.log("AJAX request to getAddedChannel failed: " + error);
-                    }
-                });
-            }
+                function getAddedChannel() {
+                    $.ajax({
+                        url: "{{ env('APP_ENV') == 'production' ? secure_url(route('channel.added')) : route('channel.added') }}",
+                        type: 'GET',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        success: function(data) {
+                            $('#added-channel').html(data);
+                        },
+                        error: function(xhr, status, error) {
+                            console.log("AJAX request to getAddedChannel failed: " + error);
+                        }
+                    });
+                }
 
-            function showPlatformModal() {
-                $.ajax({
-                    url: "{{ env('APP_ENV') == 'production' ? secure_url(route('get-platform-modal')) : route('get-platform-modal') }}",
-                    type: 'GET',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    success: function(data) {
-                        $('.modal-body').html(data);
-                        $('#modal-channel').modal('show');
-                    },
-                    error: function(xhr, status, error) {
-                        console.log("AJAX request to showPlatformModal failed: " + error);
-                    }
-                });
-            }
+                function showPlatformModal() {
+                    $.ajax({
+                        url: "{{ env('APP_ENV') == 'production' ? secure_url(route('get-platform-modal')) : route('get-platform-modal') }}",
+                        type: 'GET',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        success: function(data) {
+                            $('.modal-body').html(data);
+                            $('#modal-channel').modal('show');
+                        },
+                        error: function(xhr, status, error) {
+                            console.log("AJAX request to showPlatformModal failed: " + error);
+                        }
+                    });
+                }
         </script>
     @endpush
 @endsection
