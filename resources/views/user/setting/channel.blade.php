@@ -176,6 +176,8 @@
                 });
             }
 
+            console.log({{ env('FB_GRAPH_VERSION') }})
+
             // function statusChangeCallback(response) { // Called with the results from FB.getLoginStatus().
             //     console.log('statusChangeCallback');
             //     console.log(response); // The current login status of the person.
