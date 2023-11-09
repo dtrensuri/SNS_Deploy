@@ -146,19 +146,47 @@
                 console.log(response);
             }
 
+            function authAccessToken() {
+                FB.api('/me', function(response) {
+                    if (userResponse && !userResponse.error) {
+                        console.log('Thông tin người dùng:', userResponse);
+                    } else {
+                        console.log('Lỗi khi lấy thông tin người dùng');
+                    }
+                })
+            }
+
             $(document).ready(function() {
                 $('#add-fb-page').click(function() {
                     facebookLoginAndRetrievePages();
                 });
             });
 
+            function callBackFacebookLogin(accessToken) {
+                $.ajax({
+                    url: "{{ env('APP_ENV') == 'production' ? secure_url(route('facebook.apiCallback')) : route('facebook.apiCallback') }}",
+                    type: 'get',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    dataType: 'json',
+                    data: {
+                        'access_token': accessToken,
+                    },
+                    success: function(data) {
+                        console.log(data);
+                    },
+                    error: function(xhr, status, error) {
+
+                    }
+                })
+            }
+
             function facebookLoginAndRetrievePages() {
                 FB.login(function(response) {
-                    console.log(response);
-
-                    FB.logout(function(response) {
-                        console.log(response);
-                    });
+                    if (response.authResponse) {
+                        FB.api('/me', function(response) {});
+                    }
                 }, {
                     scope: 'public_profile,email'
                 });
