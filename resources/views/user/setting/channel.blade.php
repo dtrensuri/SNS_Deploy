@@ -18,7 +18,9 @@
                                     <i class="bi bi-facebook pe-1"></i>Facebook (Page)
                                 </button>
                                 <button type="button"
-                                    class="min-w-xl-70px btn-hover-instagram mr-2 my-1 my-xl-0 btn btn-light btn-md">
+                                    class="min-w-xl-70px btn-hover-instagram mr-2 my-1 my-xl-0 btn btn-light btn-md"
+                                    id="add-instagram-business">
+                                    >
                                     <i class="bi bi-instagram pe-1"></i>Instagram (Business)
                                 </button>
                             </div>
@@ -140,107 +142,12 @@
                     '{{ env('APP_ENV') == 'production' ? secure_url(route('fb.pages_account')) : route('fb.pages_account') }}';
 
             }
+
+            function addBusinessInstagramAccount() {
+                window.location.href =
+                    '{{ env('APP_ENV') == 'production' ? secure_url(route('fb.instagram_account')) : route('fb.instagram_account') }}';
+
+            }
         </script>
-        {{-- <script>
-            window.fbAsyncInit = function() {
-                FB.init({
-                    appId: "{{ env('FB_APP_ID') }}",
-                    cookie: true,
-                    xfbml: true,
-                    version: "{{ env('FB_GRAPH_VERSION', 'v18.0') }}"
-                });
-                FB.getLoginStatus(function(response) {
-                    statusChangeCallback(response);
-                });
-            }
-
-            function statusChangeCallback(response) {
-                console.log('statusChangeCallback');
-                console.log(response);
-            }
-
-            function authAccessToken() {
-                FB.api('/me', function(response) {
-                    if (userResponse && !userResponse.error) {
-                        console.log('Thông tin người dùng:', userResponse);
-                    } else {
-                        console.log('Lỗi khi lấy thông tin người dùng');
-                    }
-                })
-            }
-
-            $(document).ready(function() {
-                $('#add-fb-page').click(function() {
-                    facebookLoginAndRetrievePages();
-                });
-            });
-
-            function callBackFacebookLogin(accessToken) {
-                $.ajax({
-                    url: "{{ env('APP_ENV') == 'production' ? secure_url(route('facebook.apiCallbacks')) : route('facebook.apiCallbacks') }}",
-                    type: 'get',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    dataType: 'json',
-                    data: {
-                        'access_token': accessToken,
-                    },
-                    success: function(data) {
-                        console.log(data);
-                    },
-                    error: function(xhr, status, error) {
-
-                    }
-                })
-            }
-
-            function facebookLoginAndRetrievePages() {
-                FB.login(function(response) {
-                    if (response.authResponse) {
-                        FB.api('/me/accounts', 'GET', function(pagesResponse) {
-                            console.log(pagesResponse);
-                        });
-                    } else {
-                        console.log('Đăng nhập không thành công');
-                    }
-                }, {
-                    scopes: ''
-                });
-            }
-
-            function getAddedChannel() {
-                $.ajax({
-                    url: "{{ env('APP_ENV') == 'production' ? secure_url(route('channel.added')) : route('channel.added') }}",
-                    type: 'GET',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    success: function(data) {
-                        $('#added-channel').html(data);
-                    },
-                    error: function(xhr, status, error) {
-                        console.log("AJAX request to getAddedChannel failed: " + error);
-                    }
-                });
-            }
-
-            function showPlatformModal() {
-                $.ajax({
-                    url: "{{ env('APP_ENV') == 'production' ? secure_url(route('get-platform-modal')) : route('get-platform-modal') }}",
-                    type: 'GET',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    success: function(data) {
-                        $('.modal-body').html(data);
-                        $('#modal-channel').modal('show');
-                    },
-                    error: function(xhr, status, error) {
-                        console.log("AJAX request to showPlatformModal failed: " + error);
-                    }
-                });
-            }
-        </script> --}}
     @endpush
 @endsection

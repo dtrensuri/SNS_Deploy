@@ -73,8 +73,7 @@ class FacebookController extends Controller
             exit;
         }
         if (isset($accessToken)) {
-            $value = $accessToken->getValue();
-            $response = $this->checkAccessToken($value);
+            $response = $this->saveAccessToken($accessToken);
             return response()->json([
                 $response,
                 'access_token' => $accessToken->getValue()
@@ -137,12 +136,11 @@ class FacebookController extends Controller
         $loginUrl = $helper->getLoginUrl($this->callback, $this->permissions);
         return redirect()->away($loginUrl);
     }
-
-    public function checkAccessToken($accessToken)
+    public function saveAccessToken($accessToken)
     {
         Log::info('Checking access token');
         try {
-            $response = $this->client->get('/me', $accessToken);
+            $response = $this->client->get('/me', $accessToken->getValue());
         } catch (FacebookResponseException $e) {
             Log::error('Graph returned an error: ' . $e->getMessage());
             exit;
@@ -151,10 +149,7 @@ class FacebookController extends Controller
             exit;
         }
         $me = $response->getGraphUser();
-        return response()->json([
-            'id' => $me->getId(),
-            'name' => $me->getName(),
-        ], 200);
+
     }
 
     public function getListPost($accessToken)
