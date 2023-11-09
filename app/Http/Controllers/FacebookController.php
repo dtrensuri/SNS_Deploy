@@ -54,21 +54,21 @@ class FacebookController extends Controller
 
     public function loginCallback(Request $request)
     {
-        // Log::info('Facebook Login Callback');
-        // $helper = $this->client->getRedirectLoginHelper();
-        // try {
-        //     $accessToken = $helper->getAccessToken();
-        // } catch (FacebookResponseException $e) {
-        //     echo 'Graph returned an error: ' . $e->getMessage();
-        //     exit;
-        // } catch (FacebookSDKException $e) {
-        //     echo 'Facebook SDK returned an error: ' . $e->getMessage();
-        //     exit;
-        // }
-        // if (isset($accessToken)) {
-        //     dd($accessToken);
-        // }
-        return response()->json($request);
+        Log::info('Facebook Login Callback');
+        $helper = $this->client->getRedirectLoginHelper();
+        try {
+            $accessToken = $helper->getAccessToken();
+        } catch (FacebookResponseException $e) {
+            echo 'Graph returned an error: ' . $e->getMessage();
+            exit;
+        } catch (FacebookSDKException $e) {
+            echo 'Facebook SDK returned an error: ' . $e->getMessage();
+            exit;
+        }
+        if (isset($accessToken)) {
+            return response()->json($request);
+        }
+        // return response()->json($request);
     }
 
 
