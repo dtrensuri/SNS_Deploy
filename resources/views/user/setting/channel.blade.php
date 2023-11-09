@@ -1,4 +1,5 @@
 @extends('layouts.user')
+
 @section('content')
     <div class="main-content">
         <div class="d-flex flex-column flex-row-fluid">
@@ -7,29 +8,18 @@
                     <div class="row-marginless-half align-items-center flex-wrap flex-root row">
                         <div class="col-xl2-auto col-xl3-6 d-flex flex-wrap align-items-center">
                             <button type="button" class="min-w-xl-70px mr-2 my-1 my-xl-0 btn btn-success btn-md openmodal"
-                                data-toggle="modal" data-target="#modal-channel" id="show-modal"
-                                onclick="showPlatformModal()">
+                                data-toggle="modal" data-target="#modal-channel" id="show-modal">
                                 <i class="bi bi-lightning-charge-fill pe-1"></i>Connect
                             </button>
                             <div class="d-none d-sm-inline-block">
                                 <button type="button"
                                     class="min-w-xl-70px btn-hover-facebook mr-2 my-1 my-xl-0 btn btn-light btn-md"
-                                    onclick="facebookLoginAndRetrievePages()" id = "add-fb-page">
-
-                                    <i class="bi bi-facebook pe-1"></i>Facebook
-                                    (Page)
+                                    id="add-fb-page">
+                                    <i class="bi bi-facebook pe-1"></i>Facebook (Page)
                                 </button>
-                                {{-- <button type="button"
-                                    class="min-w-xl-70px btn-hover-facebook mr-2 my-1 my-xl-0 btn btn-light btn-md"
-                                    onclick="facebookLogin()" id = "add-fb-page">
-
-                                    <i class="bi bi-facebook pe-1"></i>Facebook
-                                    (Page)
-                                </button> --}}
                                 <button type="button"
                                     class="min-w-xl-70px btn-hover-instagram mr-2 my-1 my-xl-0 btn btn-light btn-md">
-                                    <i class="bi bi-instagram pe-1"></i>Instagram
-                                    (Business)
+                                    <i class="bi bi-instagram pe-1"></i>Instagram (Business)
                                 </button>
                             </div>
                         </div>
@@ -38,9 +28,10 @@
                                 class="separator w-100 w-100 d-xl2-none separator-default separator-solid separator-border-1 my-4">
                             </div>
                             <div class="flex-1 mr-3">
-                                <div class="input-group-solid input-group"><input placeholder="Search" autocomplete="off"
-                                        autocapitalize="off" autocorrect="off" spellcheck="false" type="input"
-                                        class="form-control" value="" data-listener-added_68177c20="true">
+                                <div class="input-group-solid input-group">
+                                    <input placeholder="Search" autocomplete="off" autocapitalize="off" autocorrect="off"
+                                        spellcheck="false" type="input" class="form-control" value=""
+                                        data-listener-added_68177c20="true">
                                     <div class="input-group-append">
                                         <div class="input-group-icon d-flex px-2">
                                             <i class=" p-2 bi bi-search"></i>
@@ -70,7 +61,7 @@
                                                 </div>
                                             </th>
                                             <th tabindex="0" class="w-80px d-none d-sm-table-cell">
-                                                <div class="d-flex flex-center text-center">
+                                                <div class "d-flex flex-center text-center">
                                                     <i class="bi bi-eye-fill icon-lg"></i>
                                                 </div>
                                             </th>
@@ -80,16 +71,14 @@
                                                 </div>
                                             </th>
                                             <th tabindex="0" class="w-80px d-none d-md-table-cell">
-                                                <div class="d-flex flex-center text-center"><i
-                                                        class="bi bi-pie-chart-fill icon-lg"></i>
+                                                <div class="d-flex flex-center text-center">
+                                                    <i class="bi bi-pie-chart-fill icon-lg"></i>
                                                 </div>
                                             </th>
                                             <th tabindex="0" class="text-right pr-3 w-100px">ACTIONS</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="added-channel">
-
-                                    </tbody>
+                                    <tbody id="added-channel"></tbody>
                                 </table>
                             </div>
                         </div>
@@ -111,13 +100,14 @@
                                     <i class="bi bi-chevron-double-right icon-1x"></i>
                                 </button>
                             </div>
-                            <div class="d-flex align-items-center justify-content-end ml-auto"><select
-                                    class="form-control form-control-sm font-weight-bold border-0 bg-light"
+                            <div class="d-flex align-items-center justify-content-end ml-auto">
+                                <select class="form-control form-control-sm font-weight-bold border-0 bg-light"
                                     style="width: 75px;">
                                     <option class="">10</option>
                                     <option class="">25</option>
                                     <option class="">50</option>
-                                </select></div>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -125,54 +115,23 @@
         </div>
         <div class="modal fade" id="modal-channel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog container" role="document">
-                <div class="modal-content ">
+                <div class="modal-content">
                     <div class="modal-header">
-                        <div class="d-flex align-items-center modal-title h4">Connect</div><button type="button"
-                            class="btn-icon btn-circle btn btn-light btn-md"><i
-                                class="fa-solid fa-xmark icon-lg"></i></button>
+                        <div class="d-flex align-items-center modal-title h4">Connect</div>
+                        <button type="button" class="btn-icon btn-circle btn btn-light btn-md">
+                            <i class="fa-solid fa-xmark icon-lg"></i>
+                        </button>
                     </div>
-                    <div class="modal-body" style="min-height: 450px; overflow:scroll" id="model-body">
-
-                    </div>
-
+                    <div class="modal-body" style="min-height: 450px; overflow:scroll" id="model-body"></div>
                 </div>
             </div>
         </div>
-
     </div>
     @push('script')
         <script>
-            function showPlatformModal() {
-                $.ajax({
-                    url: "{{ secure_url(route('get-platform-modal')) }}",
-                    type: 'GET',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-
-                    success: function(data) {
-                        $('.modal-body').html(data);
-                        $('#modal-channel').modal('show');
-                    },
-                });
-            };
-
-            function getAddedChannel() {
-                $.ajax({
-                    url: "{{ secure_url(route('channel.added')) }}",
-                    type: 'GET',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-
-                    success: function(data) {
-                        $('#added-channel').html(data);
-                    },
-                });
-            };
-
-            $(document).ready(function() {
-                getAddedChannel();
+            // Gọi hàm khi người dùng bấm vào nút "add-fb-page"
+            $('#add-fb-page').click(function() {
+                facebookLoginAndRetrievePages();
             });
 
             window.fbAsyncInit = function() {
@@ -182,25 +141,53 @@
                     xfbml: true,
                     version: "{{ env('FB_GRAPH_VERSION', 'v18.0') }}"
                 });
-            };
 
-            function facebookLoginAndRetrievePages() {
+                function facebookLoginAndRetrievePages() {
+                    FB.login(function(response) {
+                        if (response.authResponse) {
+                            FB.api('/me/accounts', 'GET', function(pagesResponse) {
+                                console.log(pagesResponse);
+                            });
+                        } else {
+                            console.log('Đăng nhập không thành công');
+                        }
+                    }, {
+                        scope: 'manage_pages',
+                        return_scopes: true
+                    });
+                }
 
-                FB.login(function(response) {
-                    if (response.authResponse) {
+                function getAddedChannel() {
+                    $.ajax({
+                        url: "{{ secure_url(route('channel.added')) }}",
+                        type: 'GET',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        success: function(data) {
+                            $('#added-channel').html(data);
+                        },
+                    });
+                };
 
-                        FB.api('/me/accounts', 'GET', function(pagesResponse) {
-                            console.log(pagesResponse);
-
-                        });
-                    } else {
-                        console.log('Đăng nhập không thành công');
-                    }
-                }, {
-                    scope: 'manage_pages',
-                    return_scopes: true
+                $(document).ready(function() {
+                    getAddedChannel();
                 });
-            }
+
+                function showPlatformModal() {
+                    $.ajax({
+                        url: "{{ secure_url(route('get-platform-modal')) }}",
+                        type: 'GET',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        success: function(data) {
+                            $('.modal-body').html(data);
+                            $('#modal-channel').modal('show');
+                        };
+                    })
+                };
+            };
         </script>
     @endpush
 @endsection
