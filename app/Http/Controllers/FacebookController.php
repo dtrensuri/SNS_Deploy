@@ -56,7 +56,22 @@ class FacebookController extends Controller
         return redirect()->away($loginUrl);
     }
 
-
+    public function getFbAccessToken(Request $request)
+    {
+        Log::info('Getting long live access token');
+        try {
+            $response = $this->client->get('oauth');
+        } catch (FacebookResponseException $e) {
+            Log::error('Graph returned an error: ' . $e->getMessage());
+            exit;
+        } catch (FacebookSDKException $e) {
+            Log::error('Facebook SDK returned an error: ' . $e->getMessage());
+            exit;
+        }
+        if ($response) {
+            dd($response);
+        }
+    }
 
     public function getAccessTokens()
     {
