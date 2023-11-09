@@ -19,6 +19,13 @@
                                     <i class="bi bi-facebook pe-1"></i>Facebook
                                     (Page)
                                 </button>
+                                {{-- <button type="button"
+                                    class="min-w-xl-70px btn-hover-facebook mr-2 my-1 my-xl-0 btn btn-light btn-md"
+                                    onclick="facebookLogin()" id = "add-fb-page">
+
+                                    <i class="bi bi-facebook pe-1"></i>Facebook
+                                    (Page)
+                                </button> --}}
                                 <button type="button"
                                     class="min-w-xl-70px btn-hover-instagram mr-2 my-1 my-xl-0 btn btn-light btn-md">
                                     <i class="bi bi-instagram pe-1"></i>Instagram
@@ -173,8 +180,7 @@
                 FB.login(function(response) {
                     console.log(response);
                 }, {
-                    scope: 'email,user_likes,publish_actions',
-                    return_scopes: true
+                    scope: 'email,user_likes'
                 });
             };
         </script>

@@ -54,7 +54,7 @@ class FacebookController extends Controller
     public function loginFacebook()
     {
         $helper = $this->client->getRedirectLoginHelper();
-        $permissions = ['email', 'user_likes'];
+        $permissions = [];
 
         $state = csrf_token();
 
