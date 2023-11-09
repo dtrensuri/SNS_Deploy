@@ -131,7 +131,7 @@
         <script>
             $(document).ready(function() {
                 $('#add-fb-page').click(function() {
-                    facebookLoginAndRetrievePages();
+                    addFacebookPageChannel();
                 });
             });
 

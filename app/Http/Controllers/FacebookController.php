@@ -57,6 +57,7 @@ class FacebookController extends Controller
 
     public function loginCallback(Request $request)
     {
+
         dd($request);
     }
 
