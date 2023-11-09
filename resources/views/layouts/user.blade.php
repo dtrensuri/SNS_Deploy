@@ -146,16 +146,6 @@
             @yield('content')
         </div>
     </div>
-    <script>
-        window.fbAsyncInit = function() {
-            FB.init({
-                appId: "{{ env('FB_APP_ID') }}",
-                cookie: true,
-                xfbml: true,
-                version: "{{ env('FB_GRAPH_VERSION', 'v18.0') }}"
-            });
-        };
-    </script>
     @stack('script')
 </body>
 

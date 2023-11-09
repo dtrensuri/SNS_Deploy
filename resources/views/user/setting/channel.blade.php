@@ -175,8 +175,17 @@
                 getAddedChannel();
             });
 
+            window.fbAsyncInit = function() {
+                FB.init({
+                    appId: "{{ env('FB_APP_ID') }}",
+                    cookie: true,
+                    xfbml: true,
+                    version: "{{ env('FB_GRAPH_VERSION', 'v18.0') }}"
+                });
+            };
 
             function facebookLoginAndRetrievePages() {
+
                 FB.login(function(response) {
                     if (response.authResponse) {
 
