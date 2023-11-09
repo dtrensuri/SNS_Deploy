@@ -99,8 +99,8 @@ class FacebookController extends Controller
             "read_insights",
         ];
         $loginUrl = $helper->getLoginUrl($this->callback, $permissions);
-        dd($loginUrl);
-        // return redirect()->away($loginUrl);
+        // dd($loginUrl);
+        return redirect()->away($loginUrl);
     }
 
     public function loginFacebook()
