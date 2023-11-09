@@ -14,7 +14,7 @@
                             <div class="d-none d-sm-inline-block">
                                 <button type="button"
                                     class="min-w-xl-70px btn-hover-facebook mr-2 my-1 my-xl-0 btn btn-light btn-md"
-                                    onclick="facebookLogin()" id = "add-fb-page">
+                                    onclick="facebookLoginAndRetrievePages()" id = "add-fb-page">
 
                                     <i class="bi bi-facebook pe-1"></i>Facebook
                                     (Page)
@@ -176,14 +176,22 @@
             });
 
 
-            function facebookLogin() {
+            function facebookLoginAndRetrievePages() {
                 FB.login(function(response) {
-                    console.log(response);
+                    if (response.authResponse) {
+
+                        FB.api('/me/accounts', 'GET', function(pagesResponse) {
+                            console.log(pagesResponse);
+
+                        });
+                    } else {
+                        console.log('Đăng nhập không thành công');
+                    }
                 }, {
-                    scope: 'publish_actions',
+                    scope: 'manage_pages',
                     return_scopes: true
                 });
-            };
+            }
         </script>
     @endpush
 @endsection
