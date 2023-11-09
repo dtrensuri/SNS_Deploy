@@ -12,15 +12,11 @@
                                 <i class="bi bi-lightning-charge-fill pe-1"></i>Connect
                             </button>
                             <div class="d-none d-sm-inline-block">
-                                <a
-                                    href="{{ env('APP_ENV') == 'production' ? secure_url(route('fb.pages_account')) : route('fb.pages_account') }}">
-                                    <button type="button"
-                                        class="min-w-xl-70px btn-hover-facebook mr-2 my-1 my-xl-0 btn btn-light btn-md"
-                                        id="add-fb-page">
-                                        <i class="bi bi-facebook pe-1"></i>Facebook (Page)
-                                    </button>
-                                </a>
-
+                                <button type="button"
+                                    class="min-w-xl-70px btn-hover-facebook mr-2 my-1 my-xl-0 btn btn-light btn-md"
+                                    id="add-fb-page">
+                                    <i class="bi bi-facebook pe-1"></i>Facebook (Page)
+                                </button>
                                 <button type="button"
                                     class="min-w-xl-70px btn-hover-instagram mr-2 my-1 my-xl-0 btn btn-light btn-md">
                                     <i class="bi bi-instagram pe-1"></i>Instagram (Business)
@@ -132,29 +128,19 @@
         </div>
     </div>
     @push('script')
-        {{-- <script>
+        <script>
             $(document).ready(function() {
                 $('#add-fb-page').click(function() {
-                    addFacebookPageChannel();
+                    facebookLoginAndRetrievePages();
                 });
             });
 
             function addFacebookPageChannel() {
-                $.ajax({
-                    url: "{{ env('APP_ENV') == 'production' ? secure_url(route('fb.user_account')) : route('fb.user_account') }}",
-                    type: 'GET',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    success: function(data) {
-                        console.log(data);
-                    },
-                    error: function(xhr, status, error) {
-                        console.log("AJAX request to getAddedChannel failed: " + error);
-                    }
-                });
+                window.location(
+                    '{{ env('APP_ENV') == 'production' ? secure_url(route('fb.user_account')) : route('fb.user_account') }}'
+                );
             }
-        </script> --}}
+        </script>
         {{-- <script>
             window.fbAsyncInit = function() {
                 FB.init({
