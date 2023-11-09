@@ -61,7 +61,6 @@ class FacebookController extends Controller
 
         $helper = $this->client->getRedirectLoginHelper();
         $pdata = $helper->getPersistentDataHandler();
-        dd($request, $request->get('state'));
         $pdata->set('state', $request->get('state'));
         try {
             $accessToken = $helper->getAccessToken();
@@ -73,7 +72,7 @@ class FacebookController extends Controller
             exit;
         }
         if (isset($accessToken)) {
-            return response()->json($request);
+            return response()->json($accessToken);
         }
         // return response()->json($request);
     }
