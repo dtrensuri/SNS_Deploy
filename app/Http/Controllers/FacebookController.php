@@ -103,6 +103,15 @@ class FacebookController extends Controller
         // return redirect()->away($loginUrl);
     }
 
+    public function loginFacebook()
+    {
+        $helper = $this->client->getRedirectLoginHelper();
+        $pdata = $helper->getPersistentDataHandler();
+        $pdata->set('state', csrf_token());
+        $loginUrl = $helper->getLoginUrl($this->callback, $this->permissions);
+        return redirect()->away($loginUrl);
+    }
+
     public function getFbAccessToken(Request $request)
     {
         Log::info('Getting long live access token');
