@@ -64,7 +64,8 @@ class FacebookController extends Controller
         $pdata->set('state', $request->get('state'));
         try {
             $accessToken = $helper->getAccessToken();
-            dd($accessToken);
+            $value = $accessToken->getValue();
+            $this->checkAccessToken($value);
         } catch (FacebookResponseException $e) {
             echo 'Graph returned an error: ' . $e->getMessage();
             exit;
@@ -104,7 +105,22 @@ class FacebookController extends Controller
             "read_insights",
         ];
         $loginUrl = $helper->getLoginUrl($this->callback, $permissions);
-        // dd($loginUrl);
+        return redirect()->away($loginUrl);
+    }
+
+    public function loginInstagramAccount()
+    {
+        $helper = $this->client->getRedirectLoginHelper();
+        $helper->getPersistentDataHandler()->set('state', $this->state);
+        $permissions = [
+            "instagram_basic",
+            "instagram_content_publish",
+            "instagram_manage_messages",
+            "instagram_manage_comments",
+            "instagram_manage_insights",
+            "instagram_shopping_tag_products",
+        ];
+        $loginUrl = $helper->getLoginUrl($this->callback, $permissions);
         return redirect()->away($loginUrl);
     }
 
@@ -118,28 +134,11 @@ class FacebookController extends Controller
         return redirect()->away($loginUrl);
     }
 
-    public function getFbAccessToken(Request $request)
-    {
-        Log::info('Getting long live access token');
-        try {
-            $response = $this->client->get('oauth');
-        } catch (FacebookResponseException $e) {
-            Log::error('Graph returned an error: ' . $e->getMessage());
-            exit;
-        } catch (FacebookSDKException $e) {
-            Log::error('Facebook SDK returned an error: ' . $e->getMessage());
-            exit;
-        }
-        if ($response) {
-            dd($response);
-        }
-    }
-
-    public function checkAccessToken()
+    public function checkAccessToken($accessToken)
     {
         Log::info('Checking access token');
         try {
-            $response = $this->client->get('/me', self::ACCESS_TOKEN);
+            $response = $this->client->get('/me', $accessToken);
         } catch (FacebookResponseException $e) {
             Log::error('Graph returned an error: ' . $e->getMessage());
             exit;
@@ -148,14 +147,13 @@ class FacebookController extends Controller
             exit;
         }
         $me = $response->getGraphUser();
-
         return response()->json([
             'id' => $me->getId(),
             'name' => $me->getName(),
         ], 200);
     }
 
-    public function getListPost()
+    public function getListPost($accessToken)
     {
         Log::info('Get list post');
         try {
