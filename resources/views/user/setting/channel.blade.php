@@ -129,24 +129,22 @@
     </div>
     @push('script')
         <script>
-            function fb_init() {
-                window.fbAsyncInit = function() {
-
-                    FB.init({
-                        appId: "{{ env('FB_APP_ID') }}",
-                        cookie: true,
-                        xfbml: true,
-                        version: "{{ env('FB_GRAPH_VERSION', 'v18.0') }}"
-                    });
-                }
+            window.fbAsyncInit = function() {
+                FB.init({
+                    appId: "{{ env('FB_APP_ID') }}",
+                    cookie: true,
+                    xfbml: true,
+                    version: "{{ env('FB_GRAPH_VERSION', 'v18.0') }}"
+                });
             }
 
-            $('#add-fb-page').click(function() {
-                facebookLoginAndRetrievePages();
+            $(document).ready(function() {
+                $('#add-fb-page').click(function() {
+                    facebookLoginAndRetrievePages();
+                });
             });
 
             function facebookLoginAndRetrievePages() {
-                fb_init();
                 FB.login(function(response) {
                     if (response.authResponse) {
                         FB.api('/me/accounts', 'GET', function(pagesResponse) {
@@ -159,7 +157,9 @@
                     scope: 'manage_pages',
                     return_scopes: true
                 });
-            }
+
+                getAddedChannel();
+            };
 
             function getAddedChannel() {
                 $.ajax({
@@ -170,13 +170,9 @@
                     },
                     success: function(data) {
                         $('#added-channel').html(data);
-                    },
+                    }
                 });
-            };
-
-            $(document).ready(function() {
-                getAddedChannel();
-            });
+            }
 
             function showPlatformModal() {
                 $.ajax({
@@ -189,8 +185,8 @@
                         $('.modal-body').html(data);
                         $('#modal-channel').modal('show');
                     }
-                })
-            };
+                });
+            }
         </script>
     @endpush
 @endsection
