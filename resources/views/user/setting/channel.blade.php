@@ -151,14 +151,12 @@
                             console.log(pagesResponse);
                         });
                     } else {
-                        console.log('Đăng nhập không thành công');
+                        console.log('Login failed');
                     }
                 }, {
                     scope: 'manage_pages',
                     return_scopes: true
                 });
-
-                getAddedChannel();
             };
 
             function getAddedChannel() {
@@ -170,6 +168,9 @@
                     },
                     success: function(data) {
                         $('#added-channel').html(data);
+                    },
+                    error: function(xhr, status, error) {
+                        console.log("AJAX request to getAddedChannel failed: " + error);
                     }
                 });
             }
@@ -184,6 +185,9 @@
                     success: function(data) {
                         $('.modal-body').html(data);
                         $('#modal-channel').modal('show');
+                    },
+                    error: function(xhr, status, error) {
+                        console.log("AJAX request to showPlatformModal failed: " + error);
                     }
                 });
             }
