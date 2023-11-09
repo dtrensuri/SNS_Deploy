@@ -135,6 +135,9 @@
                 $('#add-fb-page').click(function() {
                     addFacebookPageChannel();
                 });
+                $('#add-instagram-business').click(function() {
+                    addBusinessInstagramAccount();
+                });
             });
 
             function addFacebookPageChannel() {
