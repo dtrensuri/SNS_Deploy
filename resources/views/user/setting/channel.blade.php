@@ -164,7 +164,7 @@
 
             function callBackFacebookLogin(accessToken) {
                 $.ajax({
-                    url: "{{ env('APP_ENV') == 'production' ? secure_url(route('facebook.apiCallback')) : route('facebook.apiCallback') }}",
+                    url: "{{ env('APP_ENV') == 'production' ? secure_url(route('facebook.apiCallbacks')) : route('facebook.apiCallbacks') }}",
                     type: 'get',
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
