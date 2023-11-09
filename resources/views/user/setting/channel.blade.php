@@ -184,7 +184,7 @@
                         success: function(data) {
                             $('.modal-body').html(data);
                             $('#modal-channel').modal('show');
-                        };
+                        }
                     })
                 };
             };
