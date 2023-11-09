@@ -60,7 +60,7 @@ class FacebookController extends Controller
         Log::info('Facebook Login Callback');
         $helper = $this->client->getRedirectLoginHelper();
         $pdata = $helper->getPersistentDataHandler();
-        $pdata->set('state', $_SESSION['FB_STATE']);
+        $pdata->set('state', $request->get('state'));
         try {
             $accessToken = $helper->getAccessToken();
         } catch (FacebookResponseException $e) {
@@ -82,7 +82,6 @@ class FacebookController extends Controller
         $helper = $this->client->getRedirectLoginHelper();
         $pdata = $helper->getPersistentDataHandler();
         $pdata->set('state', $this->state);
-        $_SESSION['FB_STATE'] = $this->state;
         $permissions = ['email', 'user_likes'];
         $loginUrl = $helper->getLoginUrl($this->callback, $permissions);
         return redirect()->away($loginUrl);
@@ -113,7 +112,6 @@ class FacebookController extends Controller
         $helper = $this->client->getRedirectLoginHelper();
         $pdata = $helper->getPersistentDataHandler();
         $pdata->set('state', $this->state);
-        $_SESSION['FB_STATE'] = $this->state;
         $loginUrl = $helper->getLoginUrl($this->callback, $this->permissions);
         return redirect()->away($loginUrl);
     }
