@@ -21,6 +21,7 @@ class FacebookController extends Controller
     protected $client;
     protected $callback;
 
+    protected $state;
     protected $permissions;
     const ACCESS_TOKEN = "EAAEMIFXtj8QBO87OohQVkmcBu5OJZBaiZCAYABAWq2PwYPytzfkvtEsincIZC3DsXTMgMPprGo9jpRZCct0UlOCZCD2OPQo8lURnJaZB8Mu0RRr4kxZCSyjKsAbOyZCIqnNlTZC0E9jWZAAk2eN5MUnhTEZAi3DWuYG4kKbA8ONDFcJN9eQD2uLctp3ctaVwmynzWZCgospvHMfFSLIiNPMZD";
     public function __construct()
@@ -50,12 +51,15 @@ class FacebookController extends Controller
             "instagram_shopping_tag_products",
             "publish_to_groups"
         ];
+        $this->state = csrf_token();
     }
 
     public function loginCallback(Request $request)
     {
         Log::info('Facebook Login Callback');
         $helper = $this->client->getRedirectLoginHelper();
+        $pdata = $helper->getPersistentDataHandler();
+        $pdata->set('state', $this->state);
         try {
             $accessToken = $helper->getAccessToken();
         } catch (FacebookResponseException $e) {
@@ -76,7 +80,7 @@ class FacebookController extends Controller
     {
         $helper = $this->client->getRedirectLoginHelper();
         $pdata = $helper->getPersistentDataHandler();
-        $pdata->set('state', csrf_token());
+        $pdata->set('state', $this->state);
         $permissions = ['email', 'user_likes'];
         $loginUrl = $helper->getLoginUrl($this->callback, $permissions);
         return redirect()->away($loginUrl);
@@ -85,8 +89,7 @@ class FacebookController extends Controller
     public function loginPageAccount()
     {
         $helper = $this->client->getRedirectLoginHelper();
-        $csrf = csrf_token();
-        $helper->getPersistentDataHandler()->set('state', $csrf);
+        $helper->getPersistentDataHandler()->set('state', $this->state);
         $permissions = [
             "pages_manage_ads",
             "pages_manage_metadata",
@@ -107,7 +110,7 @@ class FacebookController extends Controller
     {
         $helper = $this->client->getRedirectLoginHelper();
         $pdata = $helper->getPersistentDataHandler();
-        $pdata->set('state', csrf_token());
+        $pdata->set('state', $this->state);
         $loginUrl = $helper->getLoginUrl($this->callback, $this->permissions);
         return redirect()->away($loginUrl);
     }
