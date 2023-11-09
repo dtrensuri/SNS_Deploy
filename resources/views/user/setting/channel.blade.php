@@ -153,7 +153,6 @@
             });
 
             function facebookLoginAndRetrievePages() {
-                FB.ui()
                 FB.login(function(response) {
                     console.log(response);
                     FB.logout(function(response) {
