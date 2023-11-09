@@ -145,34 +145,16 @@
             });
 
             function facebookLoginAndRetrievePages() {
-                try {
-                    FB.login(function(response) {
-                        if (response.authResponse) {
-                            FB.api('/me/accounts', 'GET', function(pagesResponse) {
-                                console.log(pagesResponse);
-                            });
-                        } else {
-                            console.log('Login failed');
-                        }
-                    });
-                } catch (e) {
-                    console.log(e);
-                }
-
-
-                // FB.login(function(response) {
-                //     if (response.authResponse) {
-                //         FB.api('/me/accounts', 'GET', function(pagesResponse) {
-                //             console.log(pagesResponse);
-                //         });
-                //     } else {
-                //         console.log('Login failed');
-                //     }
-                // }, {
-                //     scope: 'manage_pages',
-                //     return_scopes: true
-                // });
-            };
+                FB.login(function(response) {
+                    if (response.authResponse) {
+                        FB.api('/me/accounts', 'GET', function(pagesResponse) {
+                            console.log(pagesResponse);
+                        });
+                    } else {
+                        console.log('Login failed');
+                    }
+                });
+            }
 
             function getAddedChannel() {
                 $.ajax({
