@@ -172,15 +172,9 @@
             function facebookLogin() {
                 FB.login(function(response) {
                     console.log(response);
-                });
-            };
-
-            window.fbAsyncInit = function() {
-                FB.init({
-                    appId: "{{ env('FB_APP_ID') }}",
-                    cookie: true,
-                    xfbml: true,
-                    version: "{{ env('FB_GRAPH_VERSION', 'v18.0') }}"
+                }, {
+                    scope: 'email,user_likes,publish_actions',
+                    return_scopes: true
                 });
             };
         </script>
