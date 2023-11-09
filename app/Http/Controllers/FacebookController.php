@@ -86,7 +86,7 @@ class FacebookController extends Controller
     {
         $helper = $this->client->getRedirectLoginHelper();
         $csrf = csrf_token();
-        $helper->getPersistentDataHandler()->set('state', '124545454');
+        $helper->getPersistentDataHandler()->set('state', $csrf);
         $permissions = [
             "pages_manage_ads",
             "pages_manage_metadata",
