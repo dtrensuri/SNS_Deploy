@@ -4,10 +4,11 @@
 /public/hot
 /public/storage
 /storage
-/vendor
+/vendor/
 /.fleet
 /.idea
 /.vscode
+/composer.lock
 
 # Ignore specific files
 /.phpunit.cache
