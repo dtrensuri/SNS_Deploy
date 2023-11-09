@@ -185,7 +185,7 @@
             function facebookLoginAndRetrievePages() {
                 FB.login(function(response) {
                     if (response.authResponse) {
-                        FB.api('/me', function(response) {});
+                        console.log(response.authResponse.accessToken);
                     }
                 }, {
                     scope: 'public_profile,email'
