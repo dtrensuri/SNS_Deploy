@@ -72,7 +72,7 @@ class FacebookController extends Controller
             exit;
         }
         if (isset($accessToken)) {
-            return response()->json($request);
+            return response()->json($accessToken);
         }
         // return response()->json($request);
     }
