@@ -76,7 +76,8 @@ class FacebookController extends Controller
     public function loginUserAccount()
     {
         $helper = $this->client->getRedirectLoginHelper();
-        $helper->getPersistentDataHandler()->set('state', csrf_token());
+        $pdata = $helper->getPersistentDataHandler();
+        $pdata->set('state', csrf_token());
         $permissions = ['email', 'user_likes'];
         $loginUrl = $helper->getLoginUrl($this->callback, $permissions);
         return redirect()->away($loginUrl);
@@ -85,8 +86,8 @@ class FacebookController extends Controller
     public function loginPageAccount()
     {
         $helper = $this->client->getRedirectLoginHelper();
-        $pdata = $helper->getPersistentDataHandler();
-        $pdata->set('state', csrf_token());
+        $csrf = csrf_token();
+        $helper->getPersistentDataHandler()->set('state', '124545454');
         $permissions = [
             "pages_manage_ads",
             "pages_manage_metadata",
@@ -98,8 +99,9 @@ class FacebookController extends Controller
             "pages_show_list",
             "read_insights",
         ];
-        $loginUrl = $pdata->getLoginUrl($this->callback, $permissions);
-        return redirect()->away($loginUrl);
+        $loginUrl = $helper->getLoginUrl($this->callback, $permissions);
+        dd($loginUrl);
+        // return redirect()->away($loginUrl);
     }
 
     public function getFbAccessToken(Request $request)
