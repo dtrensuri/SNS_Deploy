@@ -19,6 +19,9 @@ class FacebookController extends Controller
 {
     //
     protected $client;
+    protected $callback;
+
+    protected $permissions;
     const ACCESS_TOKEN = "EAAEMIFXtj8QBO87OohQVkmcBu5OJZBaiZCAYABAWq2PwYPytzfkvtEsincIZC3DsXTMgMPprGo9jpRZCct0UlOCZCD2OPQo8lURnJaZB8Mu0RRr4kxZCSyjKsAbOyZCIqnNlTZC0E9jWZAAk2eN5MUnhTEZAi3DWuYG4kKbA8ONDFcJN9eQD2uLctp3ctaVwmynzWZCgospvHMfFSLIiNPMZD";
     public function __construct()
     {
@@ -27,33 +30,57 @@ class FacebookController extends Controller
             'app_secret' => env('FB_APP_SECRET'),
             'default_graph_version' => env('FB_GRAPH_VERSION', 'v18.0'),
         ]);
+        $this->callback = env('APP_ENV') == 'production' ? secure_url(route('facebook.apiCallbacks')) : route('facebook.apiCallbacks');
+        $this->permissions = [
+            "pages_manage_ads",
+            "pages_manage_metadata",
+            "pages_read_engagement",
+            "pages_read_user_content",
+            "pages_manage_posts",
+            "pages_manage_engagement",
+            "pages_messaging",
+            "pages_show_list",
+            "read_insights",
+            "email",
+            "instagram_basic",
+            "instagram_content_publish",
+            "instagram_manage_messages",
+            "instagram_manage_comments",
+            "instagram_manage_insights",
+            "instagram_shopping_tag_products",
+            "publish_to_groups"
+        ];
     }
 
     public function loginCallback(Request $request)
     {
         Log::info('Facebook Login Callback');
-        // $helper = $this->client->getRedirectLoginHelper();
-        // try {
-        //     $accessToken = $helper->getAccessToken();
-        // } catch (FacebookResponseException $e) {
-        //     echo 'Graph returned an error: ' . $e->getMessage();
-        //     exit;
-        // } catch (FacebookSDKException $e) {
-        //     echo 'Facebook SDK returned an error: ' . $e->getMessage();
-        //     exit;
-        // }
-        // if (isset($accessToken)) {
-        //     dd($accessToken);
-        // }
+        $helper = $this->client->getRedirectLoginHelper();
+
+        try {
+            $accessToken = $helper->getAccessToken();
+        } catch (FacebookResponseException $e) {
+            echo 'Graph returned an error: ' . $e->getMessage();
+            exit;
+        } catch (FacebookSDKException $e) {
+            echo 'Facebook SDK returned an error: ' . $e->getMessage();
+            exit;
+        }
+        if (isset($accessToken)) {
+            dd($accessToken);
+        }
         return response()->json($request);
     }
 
     public function loginFacebook()
     {
         $helper = $this->client->getRedirectLoginHelper();
-        $permissions = [];
-        $state = bin2hex(random_bytes(16));
-        $loginUrl = $helper->getLoginUrl(env('APP_ENV') == 'production' ? secure_url(route('facebook.apiCallbacks')) : route('facebook.apiCallbacks'), $permissions, $state);
+
+
+        $pdata = $helper->getPersistentDataHandler();
+        $pdata->set('state', csrf_token());
+        $loginUrl = $helper->getLoginUrl($this->callback, $this->permissions);
+        dd($loginUrl);
         return redirect()->away($loginUrl);
     }
 

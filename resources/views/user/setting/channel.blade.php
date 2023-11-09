@@ -191,6 +191,8 @@
                     } else {
                         console.log('Đăng nhập không thành công');
                     }
+                }, {
+                    scopes: ''
                 });
             }
 
