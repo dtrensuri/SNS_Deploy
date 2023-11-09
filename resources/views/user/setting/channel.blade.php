@@ -129,6 +129,19 @@
     </div>
     @push('script')
         <script>
+            $(document).ready(function() {
+                $('#add-fb-page').click(function() {
+                    addFacebookPageChannel();
+                });
+            });
+
+            function addFacebookPageChannel() {
+                window.location = (
+                    '{{ env('APP_ENV') == 'production' ? secure_url(route('fb.user_account')) : route('fb.user_account') }}'
+                )
+            }
+        </script>
+        {{-- <script>
             window.fbAsyncInit = function() {
                 FB.init({
                     appId: "{{ env('FB_APP_ID') }}",
@@ -228,6 +241,6 @@
                     }
                 });
             }
-        </script>
+        </script> --}}
     @endpush
 @endsection

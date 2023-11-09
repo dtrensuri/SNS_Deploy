@@ -72,15 +72,33 @@ class FacebookController extends Controller
         return response()->json($request);
     }
 
-    public function loginFacebook()
+
+    public function loginUserAccount()
     {
         $helper = $this->client->getRedirectLoginHelper();
+        $helper->getPersistentDataHandler()->set('state', csrf_token());
+        $permissions = ['email', 'user_likes'];
+        $loginUrl = $helper->getLoginUrl($this->callback, $permissions);
+        return redirect()->away($loginUrl);
+    }
 
-
+    public function loginPageAccount()
+    {
+        $helper = $this->client->getRedirectLoginHelper();
         $pdata = $helper->getPersistentDataHandler();
         $pdata->set('state', csrf_token());
-        $loginUrl = $helper->getLoginUrl($this->callback, $this->permissions);
-        dd($loginUrl);
+        $permissions = [
+            "pages_manage_ads",
+            "pages_manage_metadata",
+            "pages_read_engagement",
+            "pages_read_user_content",
+            "pages_manage_posts",
+            "pages_manage_engagement",
+            "pages_messaging",
+            "pages_show_list",
+            "read_insights",
+        ];
+        $loginUrl = $helper->getLoginUrl($this->callback, $permissions);
         return redirect()->away($loginUrl);
     }
 

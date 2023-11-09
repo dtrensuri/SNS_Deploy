@@ -43,8 +43,8 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('auth')->group(function () {
         Route::prefix('facebook')->group(function () {
-            Route::get('redirect', [FacebookController::class, 'loginFacebook'])->name('fb.redirect');
-            // Route::get('callback', [FacebookController::class, 'loginCallback'])->name('fb.callback');
+            Route::get('user-account', [FacebookController::class, 'loginUserAccount'])->name('fb.user_account');
+            Route::get('page-account', [FacebookController::class, 'loginPageAccount'])->name('fb.pages_account');
             Route::get('accessToken', [FacebookController::class, 'getFbAccessToken'])->name('fb.accessToken');
         });
     });
