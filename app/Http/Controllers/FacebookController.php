@@ -55,10 +55,6 @@ class FacebookController extends Controller
     {
         $helper = $this->client->getRedirectLoginHelper();
         $permissions = [];
-
-        $state = csrf_token();
-
-
         $loginUrl = $helper->getLoginUrl(secure_url(route('facebook.apiCallbacks')), $permissions);
         dd($loginUrl);
         return redirect()->away($loginUrl);
