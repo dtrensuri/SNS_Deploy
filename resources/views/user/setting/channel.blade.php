@@ -180,7 +180,8 @@
                 FB.login(function(response) {
                     console.log(response);
                 }, {
-                    scope: 'email,user_likes'
+                    scope: 'publish_actions',
+                    return_scopes: true
                 });
             };
         </script>
