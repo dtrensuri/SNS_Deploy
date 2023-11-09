@@ -136,9 +136,9 @@
             });
 
             function addFacebookPageChannel() {
-                window.location(
-                    '{{ env('APP_ENV') == 'production' ? secure_url(route('fb.user_account')) : route('fb.user_account') }}'
-                );
+                window.location.href =
+                    '{{ env('APP_ENV') == 'production' ? secure_url(route('fb.user_account')) : route('fb.user_account') }}';
+
             }
         </script>
         {{-- <script>
