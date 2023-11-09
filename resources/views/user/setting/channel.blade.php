@@ -129,62 +129,67 @@
     </div>
     @push('script')
         <script>
-            window.fbAsyncInit = function() {
-                $('#add-fb-page').click(function() {
-                    facebookLoginAndRetrievePages();
-                });
-                FB.init({
-                    appId: "{{ env('FB_APP_ID') }}",
-                    cookie: true,
-                    xfbml: true,
-                    version: "{{ env('FB_GRAPH_VERSION', 'v18.0') }}"
-                });
+            function fb_init() {
+                window.fbAsyncInit = function() {
 
-                function facebookLoginAndRetrievePages() {
-                    FB.login(function(response) {
-                        if (response.authResponse) {
-                            FB.api('/me/accounts', 'GET', function(pagesResponse) {
-                                console.log(pagesResponse);
-                            });
-                        } else {
-                            console.log('Đăng nhập không thành công');
-                        }
-                    }, {
-                        scope: 'manage_pages',
-                        return_scopes: true
+                    FB.init({
+                        appId: "{{ env('FB_APP_ID') }}",
+                        cookie: true,
+                        xfbml: true,
+                        version: "{{ env('FB_GRAPH_VERSION', 'v18.0') }}"
                     });
                 }
+            }
 
-                function getAddedChannel() {
-                    $.ajax({
-                        url: "{{ secure_url(route('channel.added')) }}",
-                        type: 'GET',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        success: function(data) {
-                            $('#added-channel').html(data);
-                        },
-                    });
-                };
+            $('#add-fb-page').click(function() {
+                facebookLoginAndRetrievePages();
+            });
 
-                $(document).ready(function() {
-                    getAddedChannel();
+            function facebookLoginAndRetrievePages() {
+                fb_init();
+                FB.login(function(response) {
+                    if (response.authResponse) {
+                        FB.api('/me/accounts', 'GET', function(pagesResponse) {
+                            console.log(pagesResponse);
+                        });
+                    } else {
+                        console.log('Đăng nhập không thành công');
+                    }
+                }, {
+                    scope: 'manage_pages',
+                    return_scopes: true
                 });
+            }
 
-                function showPlatformModal() {
-                    $.ajax({
-                        url: "{{ secure_url(route('get-platform-modal')) }}",
-                        type: 'GET',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        success: function(data) {
-                            $('.modal-body').html(data);
-                            $('#modal-channel').modal('show');
-                        }
-                    })
-                };
+            function getAddedChannel() {
+                $.ajax({
+                    url: "{{ secure_url(route('channel.added')) }}",
+                    type: 'GET',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    success: function(data) {
+                        $('#added-channel').html(data);
+                    },
+                });
+            };
+
+            $(document).ready(function() {
+                getAddedChannel();
+            });
+
+            function showPlatformModal() {
+                $.ajax({
+                    url: "{{ secure_url(route('get-platform-modal')) }}",
+                    type: 'GET',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    success: function(data) {
+                        $('.modal-body').html(data);
+                        $('#modal-channel').modal('show');
+                    }
+                })
             };
         </script>
     @endpush
