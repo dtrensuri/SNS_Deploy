@@ -57,8 +57,25 @@ class FacebookController extends Controller
 
     public function loginCallback(Request $request)
     {
+        Log::info('Facebook Login Callback');
 
-        dd($request);
+        $helper = $this->client->getRedirectLoginHelper();
+        $pdata = $helper->getPersistentDataHandler();
+        dd($request, $request->get('state'));
+        $pdata->set('state', $request->get('state'));
+        try {
+            $accessToken = $helper->getAccessToken();
+        } catch (FacebookResponseException $e) {
+            echo 'Graph returned an error: ' . $e->getMessage();
+            exit;
+        } catch (FacebookSDKException $e) {
+            echo 'Facebook SDK returned an error: ' . $e->getMessage();
+            exit;
+        }
+        if (isset($accessToken)) {
+            return response()->json($request);
+        }
+        // return response()->json($request);
     }
 
 
@@ -67,6 +84,7 @@ class FacebookController extends Controller
         $helper = $this->client->getRedirectLoginHelper();
         $pdata = $helper->getPersistentDataHandler();
         $pdata->set('state', $this->state);
+        $_SESSION['FB_STATE'] = $this->state;
         $permissions = ['email', 'user_likes'];
         $loginUrl = $helper->getLoginUrl($this->callback, $permissions);
         return redirect()->away($loginUrl);
@@ -97,6 +115,7 @@ class FacebookController extends Controller
         $helper = $this->client->getRedirectLoginHelper();
         $pdata = $helper->getPersistentDataHandler();
         $pdata->set('state', $this->state);
+        $_SESSION['FB_STATE'] = $this->state;
         $loginUrl = $helper->getLoginUrl($this->callback, $this->permissions);
         return redirect()->away($loginUrl);
     }
