@@ -48,11 +48,13 @@
                         <!-- Authentication Links -->
                         @guest
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ secure_url(route('login')) }}">{{ __('Login') }}</a>
+                                <a class="nav-link"
+                                    href="{{ env('APP_ENV') == 'production' ? secure_url(route('login')) : route('login') }}">{{ __('Login') }}</a>
                             </li>
                             @if (Route::has('register'))
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ secure_url(route('register')) }}">{{ __('Register') }}</a>
+                                    <a class="nav-link"
+                                        href="{{ env('APP_ENV') == 'production' ? secure_url(route('register')) : route('register') }}">{{ __('Register') }}</a>
                                 </li>
                             @endif
                         @else

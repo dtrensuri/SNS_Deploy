@@ -117,9 +117,9 @@ class PostController extends Controller
         $action = $request->input('action');
         $platform = $request->input('platform');
         if ($action == 'create') {
-            $url = secure_url(route('user.create-post', ['platform' => $platform]));
+            $url = env('APP_ENV') == 'production' ? secure_url(route('user.create-post', ['platform' => $platform])) : route('user.create-post', ['platform' => $platform]);
         } else {
-            $url = secure_url(route('user.view-post', ['platform' => $platform]));
+            $url = env('APP_ENV') == 'production' ? secure_url(route('user.view-post', ['platform' => $platform])) : route('user.view-post', ['platform' => $platform]);
         }
 
         return response()->json(['url' => $url]);

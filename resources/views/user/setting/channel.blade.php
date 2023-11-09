@@ -153,6 +153,7 @@
             });
 
             function facebookLoginAndRetrievePages() {
+                FB.ui()
                 FB.login(function(response) {
                     console.log(response);
                     FB.logout(function(response) {
@@ -165,7 +166,7 @@
 
             function getAddedChannel() {
                 $.ajax({
-                    url: "{{ secure_url(route('channel.added')) }}",
+                    url: "{{ env('APP_ENV') == 'production' ? secure_url(route('channel.added')) : route('channel.added') }}",
                     type: 'GET',
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
@@ -181,7 +182,7 @@
 
             function showPlatformModal() {
                 $.ajax({
-                    url: "{{ secure_url(route('get-platform-modal')) }}",
+                    url: "{{ env('APP_ENV') == 'production' ? secure_url(route('get-platform-modal')) : route('get-platform-modal') }}",
                     type: 'GET',
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'

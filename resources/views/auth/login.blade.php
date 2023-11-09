@@ -1,6 +1,6 @@
 @auth
     <script>
-        window.location.href = "{{ secure_url(route('index')) }}";
+        window.location.href = "{{ env('APP_ENV') == 'production' ? secure_url(route('index')) : route('index') }}";
     </script>
 @endauth
 

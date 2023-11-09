@@ -74,7 +74,7 @@
 
             function fetchUrl(platform) {
                 $.ajax({
-                    url: "{{ secure_url(route('get-url-platform')) }}",
+                    url: "{{ env('APP_ENV') == 'production' ? secure_url(route('get-url-platform')) : route('get-url-platform') }}",
                     method: 'post',
                     data: {
                         _token: csrfToken,

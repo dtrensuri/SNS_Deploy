@@ -9,7 +9,7 @@ use App\Http\Controllers\ChannelController;
 use Laravel\Socialite\Facades\Socialite;
 
 Route::get('/', function () {
-    return redirect(secure_url(route('user.view-post', ['platform' => 'facebook'])));
+    return redirect(env('APP_ENV') == 'production' ? secure_url(route('user.view-post', ['platform' => 'facebook'])) : route('user.view-post', ['platform' => 'facebook']));
 })->name('index');
 
 Route::name('guest')->group(function () {

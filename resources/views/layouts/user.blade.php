@@ -51,14 +51,14 @@
                     <div class="collapse show menu-collapse" id="collapse-posted">
                         <ul>
                             <li class="collapse-item row">
-                                <a href="{{ secure_url(route('user.view-post', ['platform' => 'facebook'])) }}"
+                                <a href="{{ env('APP_ENV') == 'production' ? secure_url(route('user.view-post', ['platform' => 'facebook'])) : route('user.view-post', ['platform' => 'facebook']) }}"
                                     class="nav-link text-white" aria-current="page">
                                     <h5>一覧</h5>
                                 </a>
                             </li>
                             <li class="collapse-item row">
-                                <a href="{{ secure_url(route('user.create-post')) }}" class="nav-link text-white"
-                                    aria-current="page">
+                                <a href="{{ env('APP_ENV') == 'production' ? secure_url(route('user.create-post')) : route('user.create-post') }}"
+                                    class="nav-link text-white" aria-current="page">
                                     <h5>作成</h5>
                                 </a>
                             </li>
@@ -96,8 +96,8 @@
                     <div class="collapse show menu-collapse" id="collapse-setting">
                         <ul>
                             <li class="collapse-item row">
-                                <a href="{{ secure_url(route('user.setting.channel')) }}" class="nav-link text-white"
-                                    aria-current="page">
+                                <a href="{{ env('APP_ENV') == 'production' ? secure_url(route('user.setting.channel')) : route('user.setting.channel') }}"
+                                    class="nav-link text-white" aria-current="page">
                                     <h5>channel</h5>
                                 </a>
                             </li>
@@ -138,7 +138,9 @@
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="#">プロフィール</a></li>
                             <li><a class="dropdown-item" href="#">設定</a></li>
-                            <li><a class="dropdown-item" href="{{ secure_url(route('user.logout')) }}">ログアウト</a></li>
+                            <li><a class="dropdown-item"
+                                    href="{{ env('APP_ENV') == 'production' ? secure_url(route('user.logout')) : route('user.logout') }}">ログアウト</a>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -146,6 +148,7 @@
             @yield('content')
         </div>
     </div>
+
     @stack('script')
 </body>
 

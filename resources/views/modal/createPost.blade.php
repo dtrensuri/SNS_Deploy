@@ -1,5 +1,6 @@
-<form action="{{ secure_url(route('user.handle-create-post')) }}" method="POST" class="formsubmit d-flex"
-    id="form-create-post" enctype="multipart/form-data">
+<form
+    action="{{ env('APP_ENV') == 'production' ? secure_url(route('user.handle-create-post')) : route('user.handle-create-post') }}"
+    method="POST" class="formsubmit d-flex" id="form-create-post" enctype="multipart/form-data">
 
     <div class="">
         @csrf
