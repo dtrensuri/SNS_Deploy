@@ -61,8 +61,9 @@ class FacebookController extends Controller
 
         $helper = $this->client->getRedirectLoginHelper();
         $pdata = $helper->getPersistentDataHandler();
-        $pdata->set('state', 'dothanhcao25022002');
+        $pdata->set('state', $request->get('state'));
         try {
+            dd($helper);
             $accessToken = $helper->getAccessToken();
         } catch (FacebookResponseException $e) {
             echo 'Graph returned an error: ' . $e->getMessage();
@@ -83,7 +84,6 @@ class FacebookController extends Controller
         $helper = $this->client->getRedirectLoginHelper();
         $pdata = $helper->getPersistentDataHandler();
         $pdata->set('state', $this->state);
-        $_SESSION['FB_STATE'] = $this->state;
         $permissions = ['email', 'user_likes'];
         $loginUrl = $helper->getLoginUrl($this->callback, $permissions);
         return redirect()->away($loginUrl);
@@ -92,7 +92,7 @@ class FacebookController extends Controller
     public function loginPageAccount()
     {
         $helper = $this->client->getRedirectLoginHelper();
-        $helper->getPersistentDataHandler()->set('state', 'dothanhcao25022002');
+        $helper->getPersistentDataHandler()->set('state', $this->state);
         $permissions = [
             "pages_manage_ads",
             "pages_manage_metadata",
