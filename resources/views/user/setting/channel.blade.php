@@ -200,7 +200,7 @@
                     appId: "{{ env('FB_APP_ID') }}",
                     cookie: true, // Enable cookies to allow the server to access the session.
                     xfbml: true, // Parse social plugins on this webpage.
-                    version: "{{ env('FB_GRAPH_VERSION') }}" // Use this Graph API version for this call.
+                    version: "{{ env('FB_GRAPH_VERSION', 'v18.0') }}" // Use this Graph API version for this call.
                 });
             };
 
