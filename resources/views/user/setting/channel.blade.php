@@ -146,13 +146,12 @@
 
             function facebookLoginAndRetrievePages() {
                 FB.login(function(response) {
-                    if (response.authResponse) {
-                        FB.api('/me/accounts', 'GET', function(pagesResponse) {
-                            console.log(pagesResponse);
-                        });
-                    } else {
-                        console.log('Login failed');
-                    }
+                    console.log(response);
+                    FB.logout(function(response) {
+                        console.log(response);
+                    });
+                }, {
+                    scope: 'public_profile,email'
                 });
             }
 
