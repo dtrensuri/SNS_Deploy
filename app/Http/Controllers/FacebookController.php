@@ -83,7 +83,7 @@ class FacebookController extends Controller
         }
 
         $saved = $this->saveAccessToken($accessToken);
-
+        return redirect()->back();
     }
 
     public function checkAccessToken($accessToken)
