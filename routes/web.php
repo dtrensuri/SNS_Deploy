@@ -45,7 +45,6 @@ Route::middleware('auth')->group(function () {
         Route::prefix('facebook')->group(function () {
             Route::get('user-account', [FacebookController::class, 'loginUserAccount'])->name('fb.user_account');
             Route::get('page-account', [FacebookController::class, 'loginPageAccount'])->name('fb.pages_account');
-            // Route::get('instagram-account', [FacebookController::class, 'loginInstagramAccount'])->name('fb.instagram_account');
             Route::get('accessToken', [FacebookController::class, 'getFbAccessToken'])->name('fb.accessToken');
             Route::get('login-callback', [FacebookController::class, 'loginCallback'])->name('facebook.callBacks');
             Route::get('login', [FacebookController::class, 'loginFacebook'])->name('fb.login');
