@@ -135,9 +135,9 @@
                 $('#add-fb-page').click(function() {
                     addFacebookPageChannel();
                 });
-                $('#add-instagram-business').click(function() {
-                    addBusinessInstagramAccount();
-                });
+                // $('#add-instagram-business').click(function() {
+                //     addBusinessInstagramAccount();
+                // });
             });
 
             function addFacebookPageChannel() {
@@ -146,11 +146,11 @@
 
             }
 
-            function addBusinessInstagramAccount() {
-                window.location.href =
-                    '{{ env('APP_ENV') == 'production' ? secure_url(route('fb.instagram_account')) : route('fb.instagram_account') }}';
+            // function addBusinessInstagramAccount() {
+            //     window.location.href =
+            //         '{{ env('APP_ENV') == 'production' ? secure_url(route('fb.instagram_account')) : route('fb.instagram_account') }}';
 
-            }
+            // }
         </script>
     @endpush
 @endsection
