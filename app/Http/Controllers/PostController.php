@@ -42,27 +42,29 @@ class PostController extends Controller
     {
         $listPost = Post::where('platform', 'twitter')->paginate(5);
 
-        if ($listPost) {
-            foreach ($listPost as $index => $post) {
-                $listPost[$index]['img'] = Media::where('post_id', $post['post_id'])->first();
-            }
-            return $listPost;
-        }
-        return null;
+        // if ($listPost) {
+        //     foreach ($listPost as $index => $post) {
+        //         $listPost[$index]['img'] = Media::where('post_id', $post['post_id'])->first();
+        //     }
+        //     return $listPost;
+        // }
+        // return null;
+        return $listPost;
     }
 
 
     public function getPostInsightsDB(Request $request)
     {
         $listPost = Post::all();
-        if ($listPost) {
-            foreach ($listPost as $index => $post) {
-                $listPost[$index]['img'] = Media::where('post_id', $post['post_id'])->first();
-                $listPost[$index]['user'] = User::where('id', $post['user_id'])->select('name')->first()->name;
-            }
-            return $listPost;
-        }
-        return null;
+        // if ($listPost) {
+        //     foreach ($listPost as $index => $post) {
+        //         $listPost[$index]['img'] = Media::where('post_id', $post['post_id'])->first();
+        //         $listPost[$index]['user'] = User::where('id', $post['user_id'])->select('name')->first()->name;
+        //     }
+        //     return $listPost;
+        // }
+        // return null;
+        return $listPost;
     }
 
 
