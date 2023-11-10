@@ -29,12 +29,12 @@ class PostController extends Controller
     {
         $listPost = Post::where('platform', 'facebook')->paginate(5);
 
-        if ($listPost) {
-            foreach ($listPost as $index => $post) {
-                $listPost[$index]['img'] = Media::where('post_id', $post['post_id'])->first();
-            }
-            return $listPost;
-        }
+        // if ($listPost) {
+        //     foreach ($listPost as $index => $post) {
+        //         $listPost[$index]['img'] = Media::where('post_id', $post['post_id'])->first();
+        //     }
+        //     return $listPost;
+        // }
         return null;
     }
 
