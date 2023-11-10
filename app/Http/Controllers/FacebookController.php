@@ -11,7 +11,7 @@ use Facebook\Exceptions\FacebookSDKException;
 use Facebook\Exceptions\FacebookResponseException;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Image;
+use App\Models\Media;
 use App\Models\Post;
 use App\Models\Channel;
 
