@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Models\Post;
-use App\Models\Image;
+use App\Models\Media;
 use App\Models\User;
 
 class PostController extends Controller
@@ -31,7 +31,7 @@ class PostController extends Controller
 
         if ($listPost) {
             foreach ($listPost as $index => $post) {
-                $listPost[$index]['img'] = Image::where('post_id', $post['post_id'])->first();
+                $listPost[$index]['img'] = Media::where('post_id', $post['post_id'])->first();
             }
             return $listPost;
         }
@@ -44,7 +44,7 @@ class PostController extends Controller
 
         if ($listPost) {
             foreach ($listPost as $index => $post) {
-                $listPost[$index]['img'] = Image::where('post_id', $post['post_id'])->first();
+                $listPost[$index]['img'] = Media::where('post_id', $post['post_id'])->first();
             }
             return $listPost;
         }
@@ -57,7 +57,7 @@ class PostController extends Controller
         $listPost = Post::all();
         if ($listPost) {
             foreach ($listPost as $index => $post) {
-                $listPost[$index]['img'] = Image::where('post_id', $post['post_id'])->first();
+                $listPost[$index]['img'] = Media::where('post_id', $post['post_id'])->first();
                 $listPost[$index]['user'] = User::where('id', $post['user_id'])->select('name')->first()->name;
             }
             return $listPost;

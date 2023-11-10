@@ -340,7 +340,7 @@ class FacebookController extends Controller
 
                         Log::info('Save data image to database');
                         try {
-                            Image::create($images);
+                            Media::create($images);
                         } catch (\Exception $e) {
                             Log::error('Save data image to database failed' . "\n" . $e->getMessage());
                         }
