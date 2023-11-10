@@ -56,11 +56,8 @@ class TwitterController extends Controller
             if ($request->hasFile('image')) {
                 $file = $request->file('image');
                 $file_data = base64_encode(file_get_contents($file));
-
                 $media_info = $this->uploadMedia($file_data);
-
                 $response = $this->createTweetWithMedia($content, $media_info);
-
             } else {
                 $response = $this->createTweetWithoutMedia($content);
             }

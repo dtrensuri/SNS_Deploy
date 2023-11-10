@@ -35,7 +35,7 @@ class PostController extends Controller
         //     }
         //     return $listPost;
         // }
-        return null;
+        return $listPost;
     }
 
     public function twGetPostInsightsDB(Request $request)
