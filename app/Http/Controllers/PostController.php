@@ -123,7 +123,6 @@ class PostController extends Controller
         } else {
             $url = env('APP_ENV') == 'production' ? secure_url(route('user.view-post', ['platform' => $platform])) : route('user.view-post', ['platform' => $platform]);
         }
-
         return response()->json(['url' => $url]);
     }
 

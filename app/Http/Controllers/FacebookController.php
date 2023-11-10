@@ -83,7 +83,7 @@ class FacebookController extends Controller
         }
 
         $saved = $this->saveAccessToken($accessToken);
-        dd($saved);
+
     }
 
     public function checkAccessToken($accessToken)
@@ -124,7 +124,6 @@ class FacebookController extends Controller
         }
         $accounts = $response->getGraphEdge();
         if (isset($accounts)) {
-            $channels = [];
             foreach ($accounts as $index => $account) {
                 $channel = Channel::updateOrCreate(
                     ['id_channel' => $account['id']],
@@ -138,9 +137,8 @@ class FacebookController extends Controller
                 );
                 $channels[$index] = $channel;
             }
-            dd($channels);
         }
-        return redirect()->back();
+        return true;
     }
 
     public function loginPageAccount()
