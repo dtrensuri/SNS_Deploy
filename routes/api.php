@@ -26,8 +26,5 @@ Route::prefix('twitter')->group(function () {
     Route::get('/get-my-follower', [TwitterController::class, 'getMyFollower']);
 });
 
-Route::prefix('facebook')->group(function () {
-    Route::get('login-callback', [FacebookController::class, 'loginCallback'])->name('facebook.apiCallbacks');
-});
 
 Route::get('/user', [FacebookController::class, 'checkAccessToken']);

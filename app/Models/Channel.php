@@ -2,26 +2,25 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Channel extends Model
 {
-    use HasFactory;
+    protected $table = 'channels';
 
-    protected $tableName = 'channels';
-    public $incrementing = true;
-    protected $primaryKey = 'id';
     protected $fillable = [
         'name_channel',
         'id_channel',
-        'add_id',
+        'user_id',
         'status',
         'platform',
+        'access_token',
+        'refresh_token',
+        'token_expiration',
     ];
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'add_id');
+        return $this->belongsTo(User::class);
     }
 }

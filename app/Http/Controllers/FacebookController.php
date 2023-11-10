@@ -9,11 +9,11 @@ use Illuminate\Http\Response;
 use Facebook\Facebook;
 use Facebook\Exceptions\FacebookSDKException;
 use Facebook\Exceptions\FacebookResponseException;
-use App\Models\Account;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Image;
 use App\Models\Post;
+use App\Models\Channel;
 
 class FacebookController extends Controller
 {
@@ -23,7 +23,7 @@ class FacebookController extends Controller
 
     protected $state;
     protected $permissions;
-    const ACCESS_TOKEN = "EAAEMIFXtj8QBO87OohQVkmcBu5OJZBaiZCAYABAWq2PwYPytzfkvtEsincIZC3DsXTMgMPprGo9jpRZCct0UlOCZCD2OPQo8lURnJaZB8Mu0RRr4kxZCSyjKsAbOyZCIqnNlTZC0E9jWZAAk2eN5MUnhTEZAi3DWuYG4kKbA8ONDFcJN9eQD2uLctp3ctaVwmynzWZCgospvHMfFSLIiNPMZD";
+    const ACCESS_TOKEN = "EAAEMIFXtj8QBOzvW9i6vimeGBhe6jr1Rf6yfxusvxSFcw7aScVKrr64ugciNfUW4FwFBaJs3nliLyyes6cX2GcPKpCICHe0DoEg3MJOyLjqkyd0EevA11yRPZAxZBwbKKnI6Qtpdo3H0SwnGkgKKWz8y0en6GtckNIpbxn8ldwZC5Q7DhcmoYcVy48UXEZCzR8tzwKTz1oOiYcm3O6KgTZBeUqnN22HZB6T8RvrEDY1HVq5GWfLqQUEpCRyLrfznZBgUwZDZD";
     public function __construct()
     {
         $this->client = new Facebook([
@@ -31,7 +31,7 @@ class FacebookController extends Controller
             'app_secret' => env('FB_APP_SECRET'),
             'default_graph_version' => env('FB_GRAPH_VERSION', 'v18.0'),
         ]);
-        $this->callback = env('APP_ENV') == 'production' ? secure_url(route('facebook.apiCallbacks')) : route('facebook.apiCallbacks');
+        $this->callback = env('APP_ENV') == 'production' ? secure_url(route('facebook.callBacks')) : route('facebook.callBacks');
         $this->permissions = [
             "pages_manage_ads",
             "pages_manage_metadata",
@@ -52,45 +52,95 @@ class FacebookController extends Controller
             "publish_to_groups"
         ];
         $this->state = csrf_token();
-
     }
 
     public function loginCallback(Request $request)
     {
         Log::info('Facebook Login Callback');
+        if (env('APP_ENV') == 'production') {
+            $helper = $this->client->getRedirectLoginHelper();
+            $pdata = $helper->getPersistentDataHandler();
+            $pdata->set('state', $request->get('state'));
+            try {
+                $accessToken = $helper->getAccessToken();
 
-        $helper = $this->client->getRedirectLoginHelper();
-        $pdata = $helper->getPersistentDataHandler();
-        $pdata->set('state', $request->get('state'));
-        try {
-            $accessToken = $helper->getAccessToken();
+            } catch (FacebookResponseException $e) {
+                echo 'Graph returned an error: ' . $e->getMessage();
+                exit;
+            } catch (FacebookSDKException $e) {
+                echo 'Facebook SDK returned an error: ' . $e->getMessage();
+                exit;
+            }
+            if (isset($accessToken)) {
+                $response = $this->saveAccessToken($accessToken);
+                return response()->json([
+                    $response,
+                    'access_token' => $accessToken->getValue()
+                ]);
+            }
+        } else if (env('APP_ENV') == 'local') {
+            $accessToken = self::ACCESS_TOKEN;
+            $this->saveAccessToken($accessToken);
 
-        } catch (FacebookResponseException $e) {
-            echo 'Graph returned an error: ' . $e->getMessage();
-            exit;
-        } catch (FacebookSDKException $e) {
-            echo 'Facebook SDK returned an error: ' . $e->getMessage();
-            exit;
-        }
-        if (isset($accessToken)) {
-            $response = $this->saveAccessToken($accessToken);
-            return response()->json([
-                $response,
-                'access_token' => $accessToken->getValue()
-            ]);
         }
     }
 
-
-    public function loginUserAccount()
+    public function saveAccessToken($accessToken)
     {
-        $helper = $this->client->getRedirectLoginHelper();
-        $pdata = $helper->getPersistentDataHandler();
-        $pdata->set('state', $this->state);
-        $permissions = ['email', 'user_likes'];
-        $loginUrl = $helper->getLoginUrl($this->callback, $permissions);
-        return redirect()->away($loginUrl);
+
+        if (env('APP_ENV') == 'production') {
+            Log::info('Saving access token production');
+            try {
+                $response = $this->client->get('/me/accounts', $accessToken->getValue());
+            } catch (FacebookResponseException $e) {
+                Log::error('Graph returned an error: ' . $e->getMessage());
+                exit;
+            } catch (FacebookSDKException $e) {
+                Log::error('Facebook SDK returned an error: ' . $e->getMessage());
+                exit;
+            }
+            $accounts = $response->getGraphUser();
+        } else if (env('APP_ENV') == 'local') {
+            Log::info('Saving access token local');
+            try {
+                $response = $this->client->get('/me/accounts', $accessToken);
+            } catch (FacebookResponseException $e) {
+                Log::error('Graph returned an error: ' . $e->getMessage());
+                exit;
+            } catch (FacebookSDKException $e) {
+                Log::error('Facebook SDK returned an error: ' . $e->getMessage());
+                exit;
+            }
+            $accounts = $response->getGraphEdge();
+        }
+        if (isset($accounts)) {
+            $channels = [];
+            foreach ($accounts as $index => $account) {
+                $channel = Channel::updateOrCreate(
+                    ['id_channel' => $account['id']],
+                    [
+                        'name_channel' => $account['name'],
+                        'access_token' => $account['access_token'],
+                        'user_id' => Auth::user()->id,
+                        'platform' => 'facebook',
+                        'updated_at' => now(),
+                    ]
+                );
+                $channels[$index] = $channel;
+            }
+            dd($channels);
+        }
+        return redirect()->back();
     }
+    // public function loginUserAccount()
+    // {
+    //     $helper = $this->client->getRedirectLoginHelper();
+    //     $pdata = $helper->getPersistentDataHandler();
+    //     $pdata->set('state', $this->state);
+    //     $permissions = ['email', 'user_likes'];
+    //     $loginUrl = $helper->getLoginUrl($this->callback, $permissions);
+    //     return redirect()->away($loginUrl);
+    // }
 
     public function loginPageAccount()
     {
@@ -111,48 +161,18 @@ class FacebookController extends Controller
         return redirect()->away($loginUrl);
     }
 
-    public function loginInstagramAccount()
-    {
-        $helper = $this->client->getRedirectLoginHelper();
-        $helper->getPersistentDataHandler()->set('state', $this->state);
-        $permissions = [
-            "instagram_basic",
-            "instagram_content_publish",
-            "instagram_manage_messages",
-            "instagram_manage_comments",
-            "instagram_manage_insights",
-            "instagram_shopping_tag_products",
-            "pages_show_list",
-            'pages_read_engagement'
-        ];
-        $loginUrl = $helper->getLoginUrl($this->callback, $permissions);
-        return redirect()->away($loginUrl);
-    }
 
-    public function loginFacebook()
-    {
-        $helper = $this->client->getRedirectLoginHelper();
-        $pdata = $helper->getPersistentDataHandler();
-        $pdata->set('state', $this->state);
-        $_SESSION['FB_STATE'] = $this->state;
-        $loginUrl = $helper->getLoginUrl($this->callback, $this->permissions);
-        return redirect()->away($loginUrl);
-    }
-    public function saveAccessToken($accessToken)
-    {
-        Log::info('Checking access token');
-        try {
-            $response = $this->client->get('/me', $accessToken->getValue());
-        } catch (FacebookResponseException $e) {
-            Log::error('Graph returned an error: ' . $e->getMessage());
-            exit;
-        } catch (FacebookSDKException $e) {
-            Log::error('Facebook SDK returned an error: ' . $e->getMessage());
-            exit;
-        }
-        $me = $response->getGraphUser();
 
-    }
+    // public function loginFacebook()
+    // {
+    //     $helper = $this->client->getRedirectLoginHelper();
+    //     $pdata = $helper->getPersistentDataHandler();
+    //     $pdata->set('state', $this->state);
+    //     $_SESSION['FB_STATE'] = $this->state;
+    //     $loginUrl = $helper->getLoginUrl($this->callback, $this->permissions);
+    //     return redirect()->away($loginUrl);
+    // }
+
 
     public function getListPost($accessToken)
     {
@@ -168,7 +188,6 @@ class FacebookController extends Controller
         }
         $listPost = $response->getGraphList();
         return $listPost;
-        // return;
     }
 
     public function getAttachmentPost($post_id)

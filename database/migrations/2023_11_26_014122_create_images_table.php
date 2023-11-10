@@ -10,13 +10,11 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('app_platform', function (Blueprint $table) {
+        Schema::create('images', function (Blueprint $table) {
             $table->id();
-            $table->string('app_id');
-            $table->string('app_secret');
-            $table->string('client_id');
-            $table->string('client_secret');
-            $table->string('platform');
+            $table->string('post_id');
+            $table->foreign('post_id')->references('post_id')->on('posts');
+            $table->text('image_url');
             $table->timestamps();
         });
     }
@@ -26,6 +24,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('app_plaform');
+        Schema::dropIfExists('images');
     }
 };

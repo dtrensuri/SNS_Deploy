@@ -14,9 +14,13 @@ return new class extends Migration {
             $table->id();
             $table->string('name_channel');
             $table->string('id_channel');
-            $table->unsignedBigInteger('add_id');
-            $table->string('status');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->enum('status', ['active', 'inactive'])->default('active');
             $table->string('platform');
+            $table->text('access_token');
+            $table->text('refresh_token')->nullable();
+            $table->dateTime('token_expiration')->nullable();
             $table->timestamps();
         });
     }
@@ -26,6 +30,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('channel');
+        Schema::dropIfExists('channels');
     }
 };
