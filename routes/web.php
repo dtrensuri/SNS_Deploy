@@ -28,7 +28,7 @@ Route::name('user')->middleware('auth')->group(function () {
     Route::name('.setting')->prefix('setting')->group(function () {
         Route::get('channel-settings', [SettingController::class, 'createChannelSetting'])->name('.channel');
     });
-    Route::get('/fb-backup', [FacebookController::class, 'backupData']);
+    Route::get('facebook/refresh', [FacebookController::class, 'refreshData']);
 });
 
 
@@ -50,6 +50,12 @@ Route::middleware('auth')->group(function () {
             Route::get('login', [FacebookController::class, 'loginFacebook'])->name('fb.login');
         });
     });
+});
+
+Route::name('test')->group(function () {
+    Route::get('get-access', [FacebookController::class, 'getAllAccessToken'])->name('fb.user_account');
+    Route::get('get-post', [FacebookController::class, 'getListPost'])->name('fb.user_account');
+    Route::get('get-post-attachment', [FacebookController::class, 'getAttachmentPost'])->name('fb.user_account');
 });
 
 Route::get('chinh-sach-rieng-tu', function () {

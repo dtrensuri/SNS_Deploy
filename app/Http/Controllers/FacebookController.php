@@ -80,9 +80,30 @@ class FacebookController extends Controller
             }
         } else if (env('APP_ENV') == 'local') {
             $accessToken = self::ACCESS_TOKEN;
-            $this->saveAccessToken($accessToken);
-
         }
+
+        $saved = $this->saveAccessToken($accessToken);
+        dd($saved);
+    }
+
+    public function checkAccessToken($accessToken)
+    {
+        Log::info('Saving access token');
+        try {
+            if (env('APP_ENV') == 'production') {
+                $response = $this->client->get('/me/accounts', $accessToken->getValue());
+            } else if (env('APP_ENV') == 'local') {
+                $response = $this->client->get('/me/accounts', $accessToken);
+            }
+        } catch (FacebookResponseException $e) {
+            Log::error('Graph returned an error: ' . $e->getMessage());
+            exit;
+        } catch (FacebookSDKException $e) {
+            Log::error('Facebook SDK returned an error: ' . $e->getMessage());
+            exit;
+        }
+        $accounts = $response->getGraphEdge();
+        return $accounts;
     }
 
     public function saveAccessToken($accessToken)
@@ -121,15 +142,6 @@ class FacebookController extends Controller
         }
         return redirect()->back();
     }
-    // public function loginUserAccount()
-    // {
-    //     $helper = $this->client->getRedirectLoginHelper();
-    //     $pdata = $helper->getPersistentDataHandler();
-    //     $pdata->set('state', $this->state);
-    //     $permissions = ['email', 'user_likes'];
-    //     $loginUrl = $helper->getLoginUrl($this->callback, $permissions);
-    //     return redirect()->away($loginUrl);
-    // }
 
     public function loginPageAccount()
     {
@@ -150,24 +162,24 @@ class FacebookController extends Controller
         return redirect()->away($loginUrl);
     }
 
-
-
-    // public function loginFacebook()
-    // {
-    //     $helper = $this->client->getRedirectLoginHelper();
-    //     $pdata = $helper->getPersistentDataHandler();
-    //     $pdata->set('state', $this->state);
-    //     $_SESSION['FB_STATE'] = $this->state;
-    //     $loginUrl = $helper->getLoginUrl($this->callback, $this->permissions);
-    //     return redirect()->away($loginUrl);
-    // }
-
-
-    public function getListPost($accessToken)
+    public function getAllAccessToken()
+    {
+        Log::info('Getting all access tokens');
+        try {
+            $accessToken = Channel::where('user_id', Auth::user()->id)
+                ->where('platform', 'facebook')
+                ->get();
+            return $accessToken;
+        } catch (\Exception $e) {
+            Log::info('Error get all access tokens :' . $e->getMessage());
+            return null;
+        }
+    }
+    public function getListPost($accessToken = null)
     {
         Log::info('Get list post');
         try {
-            $response = $this->client->get('/me/posts', self::ACCESS_TOKEN);
+            $response = $this->client->get('/me/posts');
         } catch (FacebookResponseException $e) {
             Log::error('Graph returned an error: ' . $e->getMessage());
             exit;
@@ -179,11 +191,12 @@ class FacebookController extends Controller
         return $listPost;
     }
 
-    public function getAttachmentPost($post_id)
+    public function getAttachmentPost($post_id, $accessToken = null)
     {
         Log::info('Get attachment post: ' . $post_id);
+
         try {
-            $response = $this->client->get("/{$post_id}/attachments", self::ACCESS_TOKEN)->getGraphEdge();
+            $response = $this->client->get("/{$post_id}/attachments");
         } catch (FacebookResponseException $e) {
             Log::error('Graph returned an error: ' . $e->getMessage());
             exit;
@@ -192,12 +205,11 @@ class FacebookController extends Controller
             exit;
         }
         try {
-            $postAttachment = $response[0];
+            $postAttachment = $response->getGraphPage()[0];
             return $postAttachment;
         } catch (\Exception $e) {
             return null;
         }
-        // return;
     }
 
     public function getUploadedImagePost($post_id)
@@ -214,7 +226,7 @@ class FacebookController extends Controller
     {
         Log::info('Get post insights: ' . $post_id);
         try {
-            $response = $this->client->get("/{$post_id}/insights?metric=post_impressions,post_engaged_users,post_reactions_by_type_total", self::ACCESS_TOKEN)->getGraphList();
+            $response = $this->client->get("/{$post_id}/insights?metric=post_impressions,post_engaged_users,post_reactions_by_type_total")->getGraphList();
         } catch (FacebookResponseException $e) {
             Log::error('Graph returned an error: ' . $e->getMessage());
             exit;
@@ -230,7 +242,7 @@ class FacebookController extends Controller
     {
         Log::info('Get post comments: ' . $post_id);
         try {
-            $response = $this->client->get("/{$post_id}?fields=comments.summary(true)", self::ACCESS_TOKEN)->getDecodedBody();
+            $response = $this->client->get("/{$post_id}?fields=comments.summary(true)")->getDecodedBody();
         } catch (FacebookResponseException $e) {
             Log::error('Graph returned an error: ' . $e->getMessage());
             exit;
@@ -271,7 +283,6 @@ class FacebookController extends Controller
 
                     $post_engaged += $values[0]['value'];
                     break;
-
             }
         }
         $postStatistics = [
@@ -283,115 +294,64 @@ class FacebookController extends Controller
         return $postStatistics;
     }
 
-    public function backupData()
-    {
-        Log::info('Backup facebook post data');
-        $listPost = $this->getListPost();
-        if ($listPost) {
-            foreach ($listPost as $post) {
-                $postStatistics = $this->getPostStatistics($post['id']);
-                $postData = array(
-                    'post_id' => $post['id'],
-                    'content' => nl2br(e($post['message'])),
-                    'status' => 'Đã đăng',
-                    'total_impressions' => $postStatistics['post_impressions'],
-                    'total_engaged' => $postStatistics['post_engaged'],
-                    'total_reactions' => $postStatistics['post_reactions'],
-                    'total_comment' => $postStatistics['post_comments'],
-                    'channel_id' => '2',
-                    'user_id' => Auth::user()->id,
-                    'platform' => 'facebook',
-                    'created_at' => $post['created_time'],
-                    'posted_time' => $post['created_time'],
-                    'updated_at' => now(),
-                    'link' => "https://facebook.com/{$post['id']}"
-                );
-
-                Log::info('Save data post to database');
-                try {
-                    Post::create(
-                        $postData
-                    );
-                } catch (\Exception $e) {
-                    Log::error('Save data post to database failed' . "\n" . $e->getMessage());
-
-                }
-                $postAttachment = $this->getAttachmentPost($post['id']);
-                if (isset($postAttachment)) {
-                    $imageSrc = $postAttachment['media']['image']['src'];
-                    $images = array(
-                        'image_url' => $imageSrc,
-                        'post_id' => $post['id']
-                    );
-
-                    Log::info('Save data image to database');
-                    try {
-                        Image::create($images);
-                    } catch (\Exception $e) {
-                        Log::error('Save data image to database failed' . "\n" . $e->getMessage());
-                    }
-                }
-
-            }
-        }
-    }
-
-    public function refreshData(Request $request)
+    public function refreshData()
     {
         Log::info('Refresh facebook post data');
-        $listPost = $this->getListPost();
-        if ($listPost) {
-            foreach ($listPost as $post) {
-                $postStatistics = $this->getPostStatistics($post['id']);
-
-                $postData = array(
-                    'post_id' => $post['id'],
-                    'content' => nl2br(e($post['message'])),
-                    'status' => 'Đã đăng',
-                    'total_impressions' => $postStatistics['post_impressions'],
-                    'total_engaged' => $postStatistics['post_engaged'],
-                    'total_reactions' => $postStatistics['post_reactions'],
-                    'total_comment' => $postStatistics['post_comments'],
-                    'channel_id' => '2',
-                    'user_id' => Auth::user()->id,
-                    'platform' => 'facebook',
-                    'created_at' => $post['created_time'],
-                    'posted_time' => $post['created_time'],
-                    'updated_at' => now(),
-                    'link' => "https://facebook.com/{$post['id']}"
-                );
-
-                Log::info('Save data post to database');
-                try {
-                    Post::updateOrInsert(
-                        ['post_id' => $post['id']],
-                        $postData
-                    );
-                } catch (\Exception $e) {
-                    Log::error('Save data post to database failed' . "\n" . $e->getMessage());
-                }
-                $postAttachment = $this->getAttachmentPost($post['id']);
-                if (isset($postAttachment)) {
-                    $imageSrc = $postAttachment['media']['image']['src'];
-                    $images = array(
-                        'image_url' => $imageSrc,
-                        'post_id' => $post['id']
+        $tokensData = $this->getAllAccessToken();
+        foreach ($tokensData as $tokenData) {
+            $accessToken = $tokenData->access_token;
+            $this->client->setDefaultAccessToken($accessToken);
+            $listPost = $this->getListPost();
+            if ($listPost) {
+                foreach ($listPost as $post) {
+                    $postStatistics = $this->getPostStatistics($post['id']);
+                    $postData = array(
+                        'post_id' => $post['id'],
+                        'content' => nl2br(e($post['message'])),
+                        'status' => 'Đã đăng',
+                        'total_impressions' => $postStatistics['post_impressions'],
+                        'total_engaged' => $postStatistics['post_engaged'],
+                        'total_reactions' => $postStatistics['post_reactions'],
+                        'total_comment' => $postStatistics['post_comments'],
+                        'channel_id' => $tokenData->id,
+                        'user_id' => Auth::user()->id,
+                        'platform' => 'facebook',
+                        'created_at' => $post['created_time'],
+                        'posted_time' => $post['created_time'],
+                        'updated_at' => now(),
+                        'link' => "https://facebook.com/{$post['id']}"
                     );
 
-                    Log::info('Save data image to database');
+                    Log::info('Save data post to database');
                     try {
-                        Image::updateOrInsert(
-                            ['post_id' => $post['id']],
-                            $images
-                        );
+                        Post::updateOrCreate(['post_id' => $post['id']], $postData);
                     } catch (\Exception $e) {
-                        Log::error('Save data image to database failed' . "\n" . $e->getMessage());
+                        Log::error('Save data post to database failed' . "\n" . $e->getMessage());
+
                     }
+
+                    $postAttachment = $this->getAttachmentPost($post['id']);
+                    if (isset($postAttachment)) {
+                        $imageSrc = $postAttachment['media']['image']['src'];
+                        $images = array(
+                            'image_url' => $imageSrc,
+                            'post_id' => $post['id']
+                        );
+
+                        Log::info('Save data image to database');
+                        try {
+                            Image::create($images);
+                        } catch (\Exception $e) {
+                            Log::error('Save data image to database failed' . "\n" . $e->getMessage());
+                        }
+                    }
+
                 }
             }
-        }
-    }
 
+        }
+        Log::info('Refresh data successfully');
+    }
     public function createPostWithMedia($content, $tmpFilePath, $accessToken)
     {
         try {
