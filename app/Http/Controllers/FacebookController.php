@@ -122,6 +122,8 @@ class FacebookController extends Controller
             "instagram_manage_comments",
             "instagram_manage_insights",
             "instagram_shopping_tag_products",
+            "pages_show_list",
+            'pages_read_engagement'
         ];
         $loginUrl = $helper->getLoginUrl($this->callback, $permissions);
         return redirect()->away($loginUrl);
