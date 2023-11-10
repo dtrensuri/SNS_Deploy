@@ -21,7 +21,7 @@
 
             </td>
             <td>
-                {{ $postDetail->user }}
+                {{ $postDetail->user['name'] }}
             </td>
             <td>
                 <div class="content-{{ $postDetail->post_id }} d-flex">
