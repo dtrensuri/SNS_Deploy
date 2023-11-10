@@ -28,7 +28,7 @@ Route::name('user')->middleware('auth')->group(function () {
     Route::name('.setting')->prefix('setting')->group(function () {
         Route::get('channel-settings', [SettingController::class, 'createChannelSetting'])->name('.channel');
     });
-    Route::get('facebook/refresh', [FacebookController::class, 'refreshData']);
+    Route::get('facebook/refresh', [FacebookController::class, 'refreshData'])->name('.facebookRefresh');
 });
 
 

@@ -72,6 +72,21 @@
                 }
             }
 
+            .refresh-btn {
+
+                .refresh-icon {}
+
+                .refreshing {
+                    animation: rotate 1s infinite linear;
+                }
+
+                @keyframes rotate {
+                    to {
+                        transform: rotate(360deg);
+                    }
+                }
+            }
+
             .table-data-post {
                 background-color: white;
                 padding: 20px;
