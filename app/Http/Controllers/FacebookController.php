@@ -87,32 +87,21 @@ class FacebookController extends Controller
 
     public function saveAccessToken($accessToken)
     {
-
-        if (env('APP_ENV') == 'production') {
-            Log::info('Saving access token production');
-            try {
+        Log::info('Saving access token');
+        try {
+            if (env('APP_ENV') == 'production') {
                 $response = $this->client->get('/me/accounts', $accessToken->getValue());
-            } catch (FacebookResponseException $e) {
-                Log::error('Graph returned an error: ' . $e->getMessage());
-                exit;
-            } catch (FacebookSDKException $e) {
-                Log::error('Facebook SDK returned an error: ' . $e->getMessage());
-                exit;
-            }
-            $accounts = $response->getGraphUser();
-        } else if (env('APP_ENV') == 'local') {
-            Log::info('Saving access token local');
-            try {
+            } else if (env('APP_ENV') == 'local') {
                 $response = $this->client->get('/me/accounts', $accessToken);
-            } catch (FacebookResponseException $e) {
-                Log::error('Graph returned an error: ' . $e->getMessage());
-                exit;
-            } catch (FacebookSDKException $e) {
-                Log::error('Facebook SDK returned an error: ' . $e->getMessage());
-                exit;
             }
-            $accounts = $response->getGraphEdge();
+        } catch (FacebookResponseException $e) {
+            Log::error('Graph returned an error: ' . $e->getMessage());
+            exit;
+        } catch (FacebookSDKException $e) {
+            Log::error('Facebook SDK returned an error: ' . $e->getMessage());
+            exit;
         }
+        $accounts = $response->getGraphEdge();
         if (isset($accounts)) {
             $channels = [];
             foreach ($accounts as $index => $account) {
@@ -528,6 +517,4 @@ class FacebookController extends Controller
         }
         return true;
     }
-
-
 }
