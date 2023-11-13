@@ -71,24 +71,20 @@ class FacebookController extends Controller
                 echo 'Facebook SDK returned an error: ' . $e->getMessage();
                 exit;
             }
-            if (isset($accessToken)) {
-                $response = $this->saveAccessToken($accessToken);
-                return response()->json([
-                    $response,
-                    'access_token' => $accessToken->getValue()
-                ]);
-            }
+
         } else if (env('APP_ENV') == 'local') {
             $accessToken = self::ACCESS_TOKEN;
-        }
 
-        $saved = $this->saveAccessToken($accessToken);
-        return redirect()->back();
+        }
+        if (isset($accessToken)) {
+            $this->saveAccessToken($accessToken);
+            return redirect()->back();
+        }
     }
 
     public function checkAccessToken($accessToken)
     {
-        Log::info('Saving access token');
+        Log::info('Checking access token');
         try {
             if (env('APP_ENV') == 'production') {
                 $response = $this->client->get('/me/accounts', $accessToken->getValue());
