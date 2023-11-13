@@ -78,7 +78,7 @@ class FacebookController extends Controller
         }
         if (isset($accessToken)) {
             $this->saveAccessToken($accessToken);
-            return redirect()->back();
+            return redirect(env('APP_ENV') == 'production' ? secure_url(route('user.setting.channel')) : route('user.setting.channel'));
         }
     }
 
@@ -323,21 +323,21 @@ class FacebookController extends Controller
 
                     }
 
-                    $postAttachment = $this->getAttachmentPost($post['id']);
-                    if (isset($postAttachment)) {
-                        $imageSrc = $postAttachment['media']['image']['src'];
-                        $images = array(
-                            'image_url' => $imageSrc,
-                            'post_id' => $post['id']
-                        );
+                    // $postAttachment = $this->getAttachmentPost($post['id']);
+                    // if (isset($postAttachment)) {
+                    //     $imageSrc = $postAttachment['media']['image']['src'];
+                    //     $images = array(
+                    //         'image_url' => $imageSrc,
+                    //         'post_id' => $post['id']
+                    //     );
 
-                        Log::info('Save data image to database');
-                        try {
-                            Media::create($images);
-                        } catch (\Exception $e) {
-                            Log::error('Save data image to database failed' . "\n" . $e->getMessage());
-                        }
-                    }
+                    //     Log::info('Save data image to database');
+                    //     try {
+                    //         Media::create($images);
+                    //     } catch (\Exception $e) {
+                    //         Log::error('Save data image to database failed' . "\n" . $e->getMessage());
+                    //     }
+                    // }
 
                 }
             }
