@@ -30,44 +30,37 @@ class PostController extends Controller
 
     public function fbGetPostInsightsDB(Request $request)
     {
-        $listPost = Post::where('platform', 'facebook')->paginate(5);
-
-        // if ($listPost) {
-        //     foreach ($listPost as $index => $post) {
-        //         $listPost[$index]['img'] = Media::where('post_id', $post['post_id'])->first();
-        //     }
-        //     return $listPost;
-        // }
-        return $listPost;
+        Log::info('Fetching Facebook posts insights from the database.');
+        try {
+            $listPost = Post::where('platform', 'facebook')->paginate(5);
+            return $listPost;
+        } catch (\Exception $e) {
+            Log::error('Error fetching Facebook posts insights: ' . $e->getMessage());
+        }
     }
 
     public function twGetPostInsightsDB(Request $request)
     {
-        $listPost = Post::where('platform', 'twitter')->paginate(5);
+        Log::info('Fetching Twitter posts insights from the database.');
+        try {
+            $listPost = Post::where('platform', 'twitter')->paginate(5);
+            return $listPost;
+        } catch (\Exception $e) {
+            Log::error('Error fetching Twitter posts insights: ' . $e->getMessage());
+        }
 
-        // if ($listPost) {
-        //     foreach ($listPost as $index => $post) {
-        //         $listPost[$index]['img'] = Media::where('post_id', $post['post_id'])->first();
-        //     }
-        //     return $listPost;
-        // }
-        // return null;
-        return $listPost;
     }
 
 
     public function getPostInsightsDB(Request $request)
     {
-        $listPost = Post::paginate(5);
-        // if ($listPost) {
-        //     foreach ($listPost as $index => $post) {
-        //         $listPost[$index]['img'] = Media::where('post_id', $post['post_id'])->first();
-        //         $listPost[$index]['user'] = User::where('id', $post['user_id'])->select('name')->first()->name;
-        //     }
-        //     return $listPost;
-        // }
-        // return null;
-        return $listPost;
+        Log::info('Fetching posts insights from the database.');
+        try {
+            $listPost = Post::paginate(5);
+            return $listPost;
+        } catch (\Exception $e) {
+            Log::error('Error fetching posts insights: ' . $e->getMessage());
+        }
     }
 
 
@@ -104,7 +97,6 @@ class PostController extends Controller
             default:
                 $postData = $this->getPostInsightsDB($request);
                 break;
-
         }
 
         return view('user.post.create', ['postData' => $postData, 'platform' => $platform]);
@@ -155,7 +147,6 @@ class PostController extends Controller
         return $view;
     }
 
-
     public function getUrl(Request $request)
     {
         $action = $request->input('action');
@@ -167,7 +158,6 @@ class PostController extends Controller
         }
         return response()->json(['url' => $url]);
     }
-
     public function createTextPost(string $content, Channel $channel)
     {
         $newPost = new Post();
@@ -193,7 +183,6 @@ class PostController extends Controller
             case 'instagram':
                 break;
         }
-
         return redirect()->back();
     }
 

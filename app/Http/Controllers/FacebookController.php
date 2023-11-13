@@ -54,6 +54,12 @@ class FacebookController extends Controller
         $this->state = csrf_token();
     }
 
+    /**
+     * Xử lý callback từ Facebook sau quá khi đăng nhập bằng Facebook.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function loginCallback(Request $request)
     {
         Log::info('Facebook Login Callback');
@@ -74,14 +80,20 @@ class FacebookController extends Controller
 
         } else if (env('APP_ENV') == 'local') {
             $accessToken = self::ACCESS_TOKEN;
-
         }
         if (isset($accessToken)) {
             $this->saveAccessToken($accessToken);
             return redirect(env('APP_ENV') == 'production' ? secure_url(route('user.setting.channel')) : route('user.setting.channel'));
         }
+        return redirect(env('APP_ENV') == 'production' ? secure_url(route('user.setting.channel')) : route('user.setting.channel'));
     }
 
+    /**
+     * Kiểm tra lại access token xem sử dụng được.
+     * @param string $accessToken
+     *
+     * @return mixed
+     */
     public function checkAccessToken($accessToken)
     {
         Log::info('Checking access token');
@@ -101,6 +113,13 @@ class FacebookController extends Controller
         $accounts = $response->getGraphEdge();
         return $accounts;
     }
+
+    /**
+     * Lưu lại mã accessToken facebook sau khi đăng nhập thành công.
+     * @param string $accessToken
+     *
+     * @return boolean
+     */
 
     public function saveAccessToken($accessToken)
     {
