@@ -168,22 +168,13 @@ class PostController extends Controller
         return response()->json(['url' => $url]);
     }
 
-    public function createTextPost(Request $request, Channel $channel)
+    public function createTextPost(string $content, Channel $channel)
     {
         $newPost = new Post();
         $newPost->user_id = Auth::user()->id;
         $newPost->created_at = now();
         $newPost->channel_id = $channel->id;
         $newPost->platform = $channel->platform;
-
-        $title = $request->input('title');
-        $description = $request->input('description');
-        if (empty($title) && empty($description)) {
-            return response()->json(['message' => 'Nội dung post hiện trống.'], Response::HTTP_BAD_REQUEST);
-        }
-
-        $content = trim("$title\n$description");
-
         switch ($channel->platform) {
             case 'facebook':
                 $fb = new FacebookController();
@@ -208,13 +199,19 @@ class PostController extends Controller
 
     function createPost(Request $request)
     {
+        $title = $request->input('title');
+        $description = $request->input('description');
+        if (empty($title) && empty($description)) {
+            return response()->json(['message' => 'Nội dung post hiện trống.'], Response::HTTP_BAD_REQUEST);
+        }
+        $content = trim("$title\n$description");
         $all_channels = Channel::all();
         foreach ($all_channels as $channel) {
             $input_name = "id_channel_" . $channel->id;
             if ($request->input($input_name) == 'on') {
                 switch ($request->input('typePost')) {
                     case 'text':
-                        return $this->createTextPost($request, $channel);
+                        $this->createTextPost($content, $channel);
                     case 'image':
                         break;
                     case 'video':
@@ -230,6 +227,7 @@ class PostController extends Controller
                 }
             }
         }
+        return response()->json('create-post-success', Response::HTTP_OK);
     }
 
 }
