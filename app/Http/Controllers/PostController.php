@@ -10,6 +10,7 @@ use App\Models\Media;
 use App\Models\User;
 use App\Models\Channel;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Response;
 
 class PostController extends Controller
 {
@@ -177,9 +178,8 @@ class PostController extends Controller
 
         $title = $request->input('title');
         $description = $request->input('description');
-
         if (empty($title) && empty($description)) {
-            return response()->json(['message' => 'Nội dung post hiện trống.'], \Response::HTTP_BAD_REQUEST);
+            return response()->json(['message' => 'Nội dung post hiện trống.'], Response::HTTP_BAD_REQUEST);
         }
 
         $content = trim("$title\n$description");
@@ -189,9 +189,10 @@ class PostController extends Controller
                 $fb = new FacebookController();
                 $fbPost = $fb->createPostWithoutMedia($content, $channel->access_token);
                 if ($fbPost) {
-                    $newPost->postId = $fbPost['id'];
-                    $postInfo = $fb->userLookup($newPost->postId, $channel->access_token);
-                    $newPost->posted_time = $postInfo['created_time'];
+                    $newPost->post_id = $fbPost['id'];
+                    $postInfo = $fb->userLookup($newPost->post_id, $channel->access_token);
+                    $newPost->posted_time = new \DateTime($postInfo['created_time']);
+                    $newPost->content = $postInfo['message'];
                     $newPost->status = "Đã đăng";
                     $newPost->save();
                 }
@@ -213,8 +214,7 @@ class PostController extends Controller
             if ($request->input($input_name) == 'on') {
                 switch ($request->input('typePost')) {
                     case 'text':
-                        $this->createTextPost($request, $channel);
-                        break;
+                        return $this->createTextPost($request, $channel);
                     case 'image':
                         break;
                     case 'video':
