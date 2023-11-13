@@ -1,3 +1,12 @@
+<div class="ribbon min-h-60px min-h-lg-70px py-2 justify-content-center modal-header">
+    <div class="modal-title h4">Create A Post</div>
+    <div
+        class="ribbon-target ribbon-upside cursor-pointer h-20px w-20px h-lg-25px w-lg-25px bg-danger bg-hover-state-danger ribbon-circle">
+
+        <i class="icon-1x text-white fa-solid fa-xmark"></i>
+    </div>
+</div>
+
 <form
     action="{{ env('APP_ENV') == 'production' ? secure_url(route('user.handle-create-post')) : route('user.handle-create-post') }}"
     method="POST" class="formsubmit d-flex" id="form-create-post" enctype="multipart/form-data">

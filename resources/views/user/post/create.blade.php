@@ -22,20 +22,10 @@
                     <a href="javascript:void(0)" data-id="" class="btn btn-outline-primary openaddmodal">Add post</a>
                 </div>
             </div>
-            <div class=" modal fade add_modal" id="exampleModal" tabindex="-1" role="dialog"
+            <div class=" modal fade add_modal" id="modal-create-post" tabindex="-1" role="dialog"
                 aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="row modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"
-                                onclick="closeModal()">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body addbody">
-                        </div>
-                    </div>
+                    <div class="modal-content p-4" id = "modal-content"></div>
                 </div>
             </div>
 
@@ -57,19 +47,23 @@
                         {{ view('table.createdPost', ['data' => $postData]) }}
                     </tbody>
                 </table>
+                @if (isset($postData))
+                    {{ $postData->links('pagination::default') }}
+                @endif
             </div>
-
         </div>
     </div>
 @endsection
-
 @push('script')
     <script>
-        function closeModal() {
-            $('#exampleModal').modal('hide');
-        }
-
         $(document).ready(function() {
+            selectPlatform.change(async function() {
+                const selectedPlatform = selectPlatform.val();
+                showLoading();
+                tableBody.html('');
+                fetchUrl(selectedPlatform);
+            });
+
             $('body').on('click', '.openaddmodal', function() {
                 var id = $(this).data('id');
                 if (id == '') {
@@ -85,61 +79,52 @@
                     },
 
                     success: function(data) {
-                        $('.addbody').html(data);
-                        $('.add_modal').modal('show');
+                        modalContent.html(data);
+                        modal.modal('show');
                     },
                 });
             });
         });
-    </script>
-@endpush
 
-@push('script')
-    <script>
-        $(document).ready(function() {
-            const selectPlatform = $("#select-platform");
-            const tableBody = $("#table-body");
-            const loadingElement = $("#loading");
-            const csrfToken = $('meta[name="csrf-token"]').attr('content');
+        const selectPlatform = $("#select-platform");
+        const tableBody = $("#table-body");
+        const loadingElement = $("#loading");
+        const csrfToken = $('meta[name="csrf-token"]').attr('content');
+        const modalContent = $("#modal-content");
+        const modal = $('#modal-create-post');
+
+        function showLoading() {
+            if (!loadingElement.hasClass("loading")) {
+                loadingElement.addClass("loading");
+            }
+        }
+
+        function hideLoading() {
+            loadingElement.removeClass('loading');
+        }
 
 
-            function showLoading() {
-                if (!loadingElement.hasClass("loading")) {
-                    loadingElement.addClass("loading");
+        function fetchUrl(platform) {
+            $.ajax({
+                url: "{{ env('APP_ENV') == 'production' ? secure_url(route('get-url-platform')) : route('get-url-platform') }}",
+                method: 'post',
+                data: {
+                    _token: csrfToken,
+                    platform: platform,
+                    action: "create",
+                },
+                success: function(response) {
+                    const url = response.url;
+                    window.location.href = url;
+                },
+                error: function() {
+                    return null;
                 }
-            }
-
-            function hideLoading() {
-                loadingElement.removeClass('loading');
-            }
-
-
-            function fetchUrl(platform) {
-                $.ajax({
-                    url: "{{ env('APP_ENV') == 'production' ? secure_url(route('get-url-platform')) : route('get-url-platform') }}",
-                    method: 'post',
-                    data: {
-                        _token: csrfToken,
-                        platform: platform,
-                        action: "create",
-                    },
-                    success: function(response) {
-                        const url = response.url;
-                        window.location.href = url;
-                    },
-                    error: function() {
-                        return null;
-                    }
-                });
-            }
-
-
-            selectPlatform.change(async function() {
-                const selectedPlatform = selectPlatform.val();
-                showLoading();
-                tableBody.html('');
-                fetchUrl(selectedPlatform);
             });
-        });
+        }
+
+        function closeModal() {
+            modal.modal('hide');
+        }
     </script>
 @endpush

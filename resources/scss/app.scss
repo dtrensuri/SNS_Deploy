@@ -168,5 +168,29 @@
         }
     }
 
+    #my-awesome-dropzone {
 
+        border: 2px dashed #ccc;
+        background-color: #f9f9f9;
+        padding: 20px;
+        margin: 20px auto;
+        text-align: center;
+
+        .fallback {
+            display: none;
+        }
+
+        .dropzone-msg {
+            margin-top: 20px;
+        }
+
+        .dropzone-msg-title {
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        .dropzone-msg-desc {
+            color: #777;
+        }
+    }
 }

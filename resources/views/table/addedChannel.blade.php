@@ -1,6 +1,7 @@
 @foreach ($channels as $index => $channel)
     <tr>
-        <td class="w-40px"><a target="_blank" class="" href="https://twitter.com/o_thanh2502">
+        <td class="w-40px">
+            {{-- <a target="_blank" class="" href="https://twitter.com/o_thanh2502">
                 <div class="sc-bczRLJ kYQZlO">
                     <div class="symbol symbol-no-variant symbol-circle"><span
                             class="symbol-label font-weight-bold font-size-h5"><i
@@ -8,15 +9,18 @@
                             class="symbol-badge symbol-badge-bottom bg-success"></i>
                     </div>
                 </div>
-            </a></td>
+            </a> --}}
+        </td>
         <td class="pl-1">
             <div>
                 <div class="text-elipsis text-muted">{{ isset($channel->id_channel) ? $channel->id_channel : '...' }}
                 </div><a target="_blank" class="font-weight-bold text-elipsis"
                     href="https://{{ $channel->platform }}.com/{{ $channel->name_channel }}">{{ isset($channel->name_channel) ? $channel->name_channel : '...' }}</a>
                 <div class="font-size-xs line-height-sm mt-1 text-elipsis text-muted">
-                    <time datetime="1697446316000">2023-10-16 15:51:56</time>,
-                    Dothanhcao2502
+                    <time datetime="{{ $channel->created_at }}">
+                        {{ $channel->created_at }}
+                    </time>,
+                    {{ $channel->name_channel }}
                 </div>
             </div>
         </td>

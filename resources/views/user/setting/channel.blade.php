@@ -63,7 +63,7 @@
                                                 </div>
                                             </th>
                                             <th tabindex="0" class="w-80px d-none d-sm-table-cell">
-                                                <div class "d-flex flex-center text-center">
+                                                <div class = "d-flex flex-center text-center">
                                                     <i class="bi bi-eye-fill icon-lg"></i>
                                                 </div>
                                             </th>
@@ -131,17 +131,32 @@
     </div>
     @push('script')
         <script>
+            const tableChannel = $("#added-channel");
+
             $(document).ready(function() {
                 $('#add-fb-page').click(function() {
                     addFacebookPageChannel();
                 });
-
+                renderTableChannels();
             });
 
             function addFacebookPageChannel() {
                 window.location.href =
                     '{{ env('APP_ENV') == 'production' ? secure_url(route('fb.pages_account')) : route('fb.pages_account') }}';
+            }
 
+            function renderTableChannels() {
+                $.ajax({
+                    url: "{{ env('APP_ENV') == 'production' ? secure_url(route('channel.all')) : route('channel.all') }}",
+                    type: 'GET',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+
+                    success: function(data) {
+                        tableChannel.html(data);
+                    },
+                });
             }
         </script>
     @endpush

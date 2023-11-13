@@ -55,7 +55,7 @@ class PostController extends Controller
 
     public function getPostInsightsDB(Request $request)
     {
-        $listPost = Post::all();
+        $listPost = Post::paginate(5);
         // if ($listPost) {
         //     foreach ($listPost as $index => $post) {
         //         $listPost[$index]['img'] = Media::where('post_id', $post['post_id'])->first();
@@ -111,8 +111,48 @@ class PostController extends Controller
 
     public function getCreateModal(Request $request)
     {
-        return view('modal.createPost');
+        return view('modal.newPost');
     }
+
+    public function getCreateCardBody(Request $request)
+    {
+        $option = $request->get('option');
+        switch ($option) {
+            case "image":
+                $view = view('card.imagePost');
+                break;
+            case "video":
+                $view = view('card.imagePost');
+                // $view = view('card.videoPost');
+                break;
+            case "album":
+                $view = view('card.imagePost');
+                // $view = view('card.albumPost');
+                break;
+            case "link":
+                $view = view('card.imagePost');
+                // $view = view('card.linkPost');
+                break;
+            case "story":
+                $view = view('card.imagePost');
+                // $view = view('card.storyPost');
+                break;
+            case "real":
+                $view = view('card.imagePost');
+                // $view = view('card.realPost');
+                break;
+            case 'text':
+                $view = view('card.imagePost');
+                // $view = view('card.textPost');
+                break;
+            default:
+                $view = view('card.imagePost');
+                // $view = view('card.defaultPost');
+                break;
+        }
+        return $view;
+    }
+
 
     public function getUrl(Request $request)
     {

@@ -24,17 +24,18 @@ Route::name('user')->middleware('auth')->group(function () {
     Route::get('create/{platform?}', [PostController::class, 'viewCreatePlatform'])->name('.create-post');
     Route::post('/create-post', [PostController::class, "createPost"])->name('.handle-create-post');
     Route::get('/logout', [AuthController::class, 'logout'])->name('.logout');
-
     Route::name('.setting')->prefix('setting')->group(function () {
         Route::get('channel-settings', [SettingController::class, 'createChannelSetting'])->name('.channel');
     });
     Route::get('facebook/refresh', [FacebookController::class, 'refreshData'])->name('.facebookRefresh');
+    Route::get('/card-create-post', [PostController::class, 'getCreateCardBody'])->name('.facebookCreateCard');
 });
 
 
 Route::middleware('auth')->group(function () {
     Route::get('get-create-modal', [PostController::class, 'getCreateModal'])->name('get-create-modal');
     Route::get('get-platform-modal', [ChannelController::class, 'getPlatformModal'])->name('get-platform-modal');
+
     Route::post('/get-url-platform', [PostController::class, "getUrl"])->name('get-url-platform');
     Route::name('channel')->group(function () {
         Route::get('all-channels', [ChannelController::class, 'getAllChannels'])->name('.all');
