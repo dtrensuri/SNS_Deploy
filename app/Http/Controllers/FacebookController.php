@@ -116,7 +116,7 @@ class FacebookController extends Controller
 
     /**
      * Lưu lại mã accessToken facebook sau khi đăng nhập thành công.
-     * @param string $accessToken
+     * @param string|mixed $accessToken
      *
      * @return boolean
      */
