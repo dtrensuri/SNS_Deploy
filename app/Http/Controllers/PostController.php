@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Log;
 use App\Models\Post;
 use App\Models\Media;
 use App\Models\User;
+use App\Models\Channel;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
@@ -89,11 +91,8 @@ class PostController extends Controller
 
     public function viewCreatePlatform(Request $request, string $platform = null)
     {
-        $postData = null;
+
         switch ($platform) {
-            case null:
-                $postData = $this->getPostInsightsDB($request);
-                break;
             case "facebook":
                 $postData = $this->fbGetPostInsightsDB($request);
                 break;
@@ -102,6 +101,7 @@ class PostController extends Controller
             case "instagram":
                 break;
             default:
+                $postData = $this->getPostInsightsDB($request);
                 break;
 
         }
@@ -111,7 +111,8 @@ class PostController extends Controller
 
     public function getCreateModal(Request $request)
     {
-        return view('modal.newPost');
+        $all_channels = Channel::all();
+        return view('modal.newPost', ['all_channels' => $all_channels]);
     }
 
     public function getCreateCardBody(Request $request)
@@ -142,8 +143,8 @@ class PostController extends Controller
                 // $view = view('card.realPost');
                 break;
             case 'text':
-                $view = view('card.imagePost');
-                // $view = view('card.textPost');
+                // $view = view('card.imagePost');
+                $view = view('card.textPost');
                 break;
             default:
                 $view = view('card.imagePost');
@@ -166,24 +167,68 @@ class PostController extends Controller
         return response()->json(['url' => $url]);
     }
 
+    public function createTextPost(Request $request, Channel $channel)
+    {
+        $newPost = new Post();
+        $newPost->user_id = Auth::user()->id;
+        $newPost->created_at = now();
+        $newPost->channel_id = $channel->id;
+        $newPost->platform = $channel->platform;
+
+        $title = $request->input('title');
+        $description = $request->input('description');
+
+        if (empty($title) && empty($description)) {
+            return response()->json(['message' => 'Nội dung post hiện trống.'], \Response::HTTP_BAD_REQUEST);
+        }
+
+        $content = trim("$title\n$description");
+
+        switch ($channel->platform) {
+            case 'facebook':
+                $fb = new FacebookController();
+                $fbPost = $fb->createPostWithoutMedia($content, $channel->access_token);
+                if ($fbPost) {
+                    $newPost->postId = $fbPost['id'];
+                    $postInfo = $fb->userLookup($newPost->postId, $channel->access_token);
+                    $newPost->posted_time = $postInfo['created_time'];
+                    $newPost->status = "Đã đăng";
+                    $newPost->save();
+                }
+                break;
+            case 'twitter':
+                break;
+            case 'instagram':
+                break;
+        }
+
+        return redirect()->back();
+    }
+
     function createPost(Request $request)
     {
-        if ($request->input('twitter') == 'on') {
-            try {
-                $response['twitter'] = $this->twitter->createNewTweet($request);
-            } catch (\Exception $e) {
-                return response()->json(['message' => 'Failed to create post.'], 500);
+        $all_channels = Channel::all();
+        foreach ($all_channels as $channel) {
+            $input_name = "id_channel_" . $channel->id;
+            if ($request->input($input_name) == 'on') {
+                switch ($request->input('typePost')) {
+                    case 'text':
+                        $this->createTextPost($request, $channel);
+                        break;
+                    case 'image':
+                        break;
+                    case 'video':
+                        break;
+                    case 'link':
+                        break;
+                    case 'reel':
+                        break;
+                    case 'story':
+                        break;
+                    default:
+                        break;
+                }
             }
-        }
-        if ($request->input('facebook') == 'on') {
-            try {
-                $response['facebook'] = $this->facebook->createNewPost($request);
-            } catch (\Exception $e) {
-                return response()->json(['message' => 'Failed to create post.', 'error' => $e->getMessage()], 500);
-            }
-        }
-        if (isset($response)) {
-            return response()->json($response);
         }
     }
 

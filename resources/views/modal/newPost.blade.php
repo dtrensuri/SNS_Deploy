@@ -43,23 +43,16 @@
                                             <label class="form-check-label" for="all">--ALL--</label>
                                         </div>
 
-                                        <div class="form-group form-check">
-                                            <input type="checkbox" class="form-check-input" id="twitter"
-                                                name="twitter">
-                                            <label class="form-check-label" for="twitter">Twitter</label>
-                                        </div>
-
-                                        <div class="form-group form-check">
-                                            <input type="checkbox" class="form-check-input" id="facebook"
-                                                name="facebook">
-                                            <label class="form-check-label" for="facebook">Facebook</label>
-                                        </div>
-
-                                        <div class="form-group form-check">
-                                            <input type="checkbox" class="form-check-input" id="instagram" disabled
-                                                name="instagram">
-                                            <label class="form-check-label" for="instagram">Instagram</label>
-                                        </div>
+                                        @foreach ($all_channels as $key => $channel)
+                                            {{-- @dd($channel) --}}
+                                            <div class="form-group form-check">
+                                                <input type="checkbox" class="form-check-input"
+                                                    id="id_channel_{{ $channel->id }}"
+                                                    name="id_channel_{{ $channel->id }}">
+                                                <label class="form-check-label"
+                                                    for="id_channel_{{ $channel->id }}">{{ $channel->name_channel }}</label>
+                                            </div>
+                                        @endforeach
                                     </div>
                                 </ul>
                             </div>

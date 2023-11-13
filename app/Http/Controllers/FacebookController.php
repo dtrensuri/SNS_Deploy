@@ -124,8 +124,8 @@ class FacebookController extends Controller
         }
         $accounts = $response->getGraphEdge();
         if (isset($accounts)) {
-            foreach ($accounts as $index => $account) {
-                $channel = Channel::updateOrCreate(
+            foreach ($accounts as $account) {
+                Channel::updateOrCreate(
                     ['id_channel' => $account['id']],
                     [
                         'name_channel' => $account['name'],
@@ -135,7 +135,6 @@ class FacebookController extends Controller
                         'updated_at' => now(),
                     ]
                 );
-                $channels[$index] = $channel;
             }
         }
         return true;
@@ -370,14 +369,38 @@ class FacebookController extends Controller
         }
     }
 
-    public function createPostWithoutMedia($content)
-    {
-        Log::info('Create post without media');
+    // public function createPostWithoutMedia($content, $accessToken)
+    // {
+    //     Log::info('Create post without media');
 
+    //     try {
+
+    //         $response = $this->client->post('/me/feed', [
+    //             'message' => $content,
+    //             'access_token' => $accessToken,
+    //         ]);
+    //         $postInfo = $response->getDecodedBody();
+    //         return $postInfo;
+    //     } catch (FacebookResponseException $e) {
+    //         Log::error('Lỗi Facebook API: ' . $e->getMessage());
+    //         return null;
+    //     } catch (FacebookSDKException $e) {
+    //         Log::error('Lỗi Facebook SDK: ' . $e->getMessage());
+    //         return null;
+    //     }
+    // }
+
+    // public function getPageAccessToken(Request $request){
+    //     $response = $this->client->
+    // }
+
+    public function createPostWithoutMedia($content, $accessToken)
+    {
+        Log::info('Create facebook post without media');
         try {
             $response = $this->client->post('/me/feed', [
                 'message' => $content,
-                'access_token' => self::ACCESS_TOKEN,
+                'access_token' => $accessToken,
             ]);
             $postInfo = $response->getDecodedBody();
             return $postInfo;
@@ -390,51 +413,66 @@ class FacebookController extends Controller
         }
     }
 
-    // public function getPageAccessToken(Request $request){
-    //     $response = $this->client->
+    // public function createNewPost(Request $request)
+    // {
+    //     $accessToken = self::ACCESS_TOKEN;
+    //     $newPost = new Post();
+    //     $newPost->user_id = Auth::user()->id;
+    //     $newPost->created_at = now();
+    //     $newPost->channel_id = '1';
+    //     $newPost->platform = 'facebook';
+    //     $title = $request->input('title');
+    //     $description = $request->input('description');
+
+    //     if (empty($title) && empty($description)) {
+    //         return response()->json(['message' => 'Nội dung post hiện trống.'], Response::HTTP_BAD_REQUEST);
+    //     }
+
+    //     $content = trim("$title\n$description");
+
+    //     $newPost->content = $content;
+    //     try {
+    //         if ($request->hasFile('image')) {
+    //             $file = $request->file('image');
+    //             $tmpFilePath = $file->getRealPath();
+    //             $response = $this->createPostWithMedia($content, $tmpFilePath, $accessToken);
+
+    //             $imageLink = '';
+    //         } else {
+    //             $response = $this->createPostWithoutMedia($content);
+
+    //         }
+    //         if (isset($response['id'])) {
+    //             $id_post = $response['id'];
+    //             $newPost->post_id = $id_post;
+    //             $newPost->posted_time = now();
+    //             $newPost->status = 'Đã đăng';
+    //             $newPost->save();
+    //         }
+
+    //         return response()->json($response, Response::HTTP_OK);
+    //     } catch (\Exception $e) {
+    //         Log::error($e->getMessage());
+    //         return response()->json(['message' => 'An error occurred.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+    //     }
     // }
 
-    public function createNewPost(Request $request)
+    public function userLookup($id, $accessToken)
     {
-        $accessToken = self::ACCESS_TOKEN;
-        $newPost = new Post();
-        $newPost->user_id = Auth::user()->id;
-        $newPost->created_at = now();
-        $newPost->channel_id = '1';
-        $newPost->platform = 'facebook';
-        $title = $request->input('title');
-        $description = $request->input('description');
-
-        if (empty($title) && empty($description)) {
-            return response()->json(['message' => 'Nội dung post hiện trống.'], Response::HTTP_BAD_REQUEST);
-        }
-
-        $content = trim("$title\n$description");
-
-        $newPost->content = $content;
+        Log::info('Lookup facebook id: ' . $id);
         try {
-            if ($request->hasFile('image')) {
-                $file = $request->file('image');
-                $tmpFilePath = $file->getRealPath();
-                $response = $this->createPostWithMedia($content, $tmpFilePath, $accessToken);
-
-                $imageLink = '';
-            } else {
-                $response = $this->createPostWithoutMedia($content);
-
-            }
-            if (isset($response['id'])) {
-                $id_post = $response['id'];
-                $newPost->post_id = $id_post;
-                $newPost->posted_time = now();
-                $newPost->status = 'Đã đăng';
-                $newPost->save();
-            }
-
-            return response()->json($response, Response::HTTP_OK);
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
-            return response()->json(['message' => 'An error occurred.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+            $response = $this->client->get(
+                $id,
+                $accessToken
+            );
+            $postInfo = $response->getDecodedBody();
+            return $postInfo;
+        } catch (FacebookResponseException $e) {
+            Log::error('Lỗi Facebook API: ' . $e->getMessage());
+            return null;
+        } catch (FacebookSDKException $e) {
+            Log::error('Lỗi Facebook SDK: ' . $e->getMessage());
+            return null;
         }
     }
 

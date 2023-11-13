@@ -1,3 +1,5 @@
+<input type="hidden" name="typePost" value="image" />
+
 <div class="d-flex flex-column mt-2">
 
     <div class="dropzone-msg">
