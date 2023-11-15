@@ -26,6 +26,7 @@ Route::name('user')->middleware('auth')->group(function () {
     Route::get('/logout', [AuthController::class, 'logout'])->name('.logout');
     Route::name('.setting')->prefix('setting')->group(function () {
         Route::get('channel-settings', [SettingController::class, 'createChannelSetting'])->name('.channel');
+
     });
     Route::get('facebook/refresh', [FacebookController::class, 'refreshData'])->name('.facebookRefresh');
     Route::get('/card-create-post', [PostController::class, 'getCreateCardBody'])->name('.facebookCreateCard');
@@ -39,6 +40,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/get-url-platform', [PostController::class, "getUrl"])->name('get-url-platform');
     Route::name('channel')->group(function () {
         Route::get('all-channels', [ChannelController::class, 'getAllChannels'])->name('.all');
+        Route::post('save-accessToken', [SettingController::class, 'saveAccessToken'])->name('.saveToken');
         Route::get('added-channel', [ChannelController::class, 'renderTableAddedChannel'])->name('.added');
     });
 

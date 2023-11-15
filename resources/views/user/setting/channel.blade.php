@@ -2,8 +2,6 @@
     @dd($access_token)
 @endisset
 
-
-
 @extends('layouts.user')
 
 @section('content')
@@ -20,19 +18,17 @@
                             <table class="w-100">
                                 @foreach ($channels as $channel)
                                     <tr>
-
                                         <td class="table-item">
                                             <p>{{ $channel['name'] }}</p>
                                         </td>
                                         <td class="table-item d-flex justify-content-end">
-                                            <div class="btn-danger btn"> add</div>
+                                            <div class="btn-danger btn" onclick="addChannel('{{ $channel['access_token'] }}')">
+                                                add
+                                            </div>
                                         </td>
-
                                     </tr>
                                 @endforeach
                             </table>
-
-
                         </div>
                     </div>
                 </div>
@@ -44,6 +40,24 @@
             })
         </script>
     @endisset
+
+    <div class="modal" id="save-accept" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Xác nhận</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Bạn xác nhận có muốn kết nối tới channel này ?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Từ chối</button>
+                    <button type="button" class="btn btn-success">Đồng ý</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="main-content">
         <div class="d-flex flex-column flex-row-fluid">
             <div class="card card-stretch card-custom">
@@ -202,6 +216,30 @@
                         tableChannel.html(data);
                     },
                 });
+            }
+
+            function addChannel(accessToken) {
+                $('#select-channel').modal('hide');
+                $('#save-accept').modal('show');
+
+            }
+
+            function acceptAddChannel(accessToken) {
+                $.ajax({
+                    url: "{{ env('APP_ENV') == 'production' ? secure_url(route('channel.saveToken')) : route('channel.saveToken') }}",
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    data: {
+                        'access_token': accessToken,
+                    },
+                    success: function(data) {
+                        console.log(data);
+                        // tableChannel.html(data);
+                    },
+                });
+                console.log(accessToken);
             }
 
             // function getInfoFacebookPage() {

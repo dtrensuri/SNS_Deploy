@@ -34,4 +34,12 @@ class SettingController extends Controller
         }
         return view('user.setting.channel', ['access_token' => $accessToken, 'action' => $action]);
     }
+
+    public function saveAccessToken(Request $request)
+    {
+        $fb = new FacebookController;
+        $accessToken = $request->input('access_token');
+        $handle = $fb->saveAccessToken($accessToken);
+        return response()->json($handle, 200);
+    }
 }

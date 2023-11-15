@@ -144,10 +144,10 @@ class FacebookController extends Controller
             $response = $this->client->get('/me/accounts', $accessToken);
         } catch (FacebookResponseException $e) {
             Log::error('Graph returned an error: ' . $e->getMessage());
-            exit;
+            return false;
         } catch (FacebookSDKException $e) {
             Log::error('Facebook SDK returned an error: ' . $e->getMessage());
-            exit;
+            return false;
         }
         $accounts = $response->getGraphEdge();
         if (isset($accounts)) {
