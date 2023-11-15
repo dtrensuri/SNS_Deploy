@@ -32,7 +32,9 @@ class PostController extends Controller
     {
         Log::info('Fetching Facebook posts insights from the database.');
         try {
-            $listPost = Post::where('platform', 'facebook')->paginate(5);
+            $listPost = Post::where('platform', 'facebook')
+                ->orderBy('posted_time', 'DESC')
+                ->paginate(5);
             return $listPost;
         } catch (\Exception $e) {
             Log::error('Error fetching Facebook posts insights: ' . $e->getMessage());
@@ -43,7 +45,9 @@ class PostController extends Controller
     {
         Log::info('Fetching Twitter posts insights from the database.');
         try {
-            $listPost = Post::where('platform', 'twitter')->paginate(5);
+            $listPost = Post::where('platform', 'twitter')
+                ->orderBy('posted_time', 'DESC')
+                ->paginate(5);
             return $listPost;
         } catch (\Exception $e) {
             Log::error('Error fetching Twitter posts insights: ' . $e->getMessage());
