@@ -56,6 +56,22 @@
         min-height: 100vh;
         background-color: #EEEEEE;
 
+        .modal-cover {
+            background-color: #9591913a;
+            position: fixed;
+            width: 100%;
+            z-index: 99;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            .box-select-channel {
+
+                background-color: white;
+                border-radius: .5rem;
+            }
+        }
+
         .main-content {
             position: relative;
 

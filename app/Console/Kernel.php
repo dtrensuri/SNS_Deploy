@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->command('update:fb-post-database')->everyMinute(20);
+        // $schedule->command('update:fb-post-database')->everys
     }
 
     /**

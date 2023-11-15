@@ -54,6 +54,7 @@ class FacebookController extends Controller
         $this->state = csrf_token();
     }
 
+
     /**
      * Xử lý callback từ Facebook sau quá khi đăng nhập bằng Facebook.
      *
@@ -68,7 +69,7 @@ class FacebookController extends Controller
             $pdata = $helper->getPersistentDataHandler();
             $pdata->set('state', $request->get('state'));
             try {
-                $accessToken = $helper->getAccessToken();
+                $accessToken = $helper->getAccessToken()->getValue();
 
             } catch (FacebookResponseException $e) {
                 echo 'Graph returned an error: ' . $e->getMessage();
@@ -82,8 +83,8 @@ class FacebookController extends Controller
             $accessToken = self::ACCESS_TOKEN;
         }
         if (isset($accessToken)) {
-            $this->saveAccessToken($accessToken);
-            return redirect(env('APP_ENV') == 'production' ? secure_url(route('user.setting.channel')) : route('user.setting.channel'));
+            // $this->saveAccessToken($accessToken);
+            return redirect(env('APP_ENV') == 'production' ? secure_url(route('user.setting.channel')) : route('user.setting.channel'))->with('access_token', $accessToken);
         }
         return redirect(env('APP_ENV') == 'production' ? secure_url(route('user.setting.channel')) : route('user.setting.channel'));
     }
@@ -98,11 +99,7 @@ class FacebookController extends Controller
     {
         Log::info('Checking access token');
         try {
-            if (env('APP_ENV') == 'production') {
-                $response = $this->client->get('/me/accounts', $accessToken->getValue());
-            } else if (env('APP_ENV') == 'local') {
-                $response = $this->client->get('/me/accounts', $accessToken);
-            }
+            $response = $this->client->get('/me/accounts', $accessToken);
         } catch (FacebookResponseException $e) {
             Log::error('Graph returned an error: ' . $e->getMessage());
             exit;
@@ -112,6 +109,25 @@ class FacebookController extends Controller
         }
         $accounts = $response->getGraphEdge();
         return $accounts;
+    }
+
+    public function getPageAccount(string $accessToken)
+    {
+        Log::info('Call api get page account');
+        try {
+            $response = $this->client->get('/me/accounts', $accessToken);
+        } catch (FacebookResponseException $e) {
+            Log::error('Graph returned an error: ' . $e->getMessage());
+            exit;
+        } catch (FacebookSDKException $e) {
+            Log::error('Facebook SDK returned an error: ' . $e->getMessage());
+            exit;
+        }
+        if (isset($response)) {
+            $channels = $response->getGraphEdge();
+            return $channels;
+        }
+        return null;
     }
 
     /**
@@ -125,11 +141,7 @@ class FacebookController extends Controller
     {
         Log::info('Saving access token');
         try {
-            if (env('APP_ENV') == 'production') {
-                $response = $this->client->get('/me/accounts', $accessToken->getValue());
-            } else if (env('APP_ENV') == 'local') {
-                $response = $this->client->get('/me/accounts', $accessToken);
-            }
+            $response = $this->client->get('/me/accounts', $accessToken);
         } catch (FacebookResponseException $e) {
             Log::error('Graph returned an error: ' . $e->getMessage());
             exit;
@@ -155,6 +167,7 @@ class FacebookController extends Controller
         return true;
     }
 
+
     public function loginPageAccount()
     {
         $helper = $this->client->getRedirectLoginHelper();
@@ -170,7 +183,7 @@ class FacebookController extends Controller
             "pages_show_list",
             "read_insights",
         ];
-        $loginUrl = $helper->getLoginUrl($this->callback, $permissions);
+        $loginUrl = (env('APP_ENV') == "production") ? $helper->getLoginUrl($this->callback, $this->permissions) : route('facebook.callBacks');
         return redirect()->away($loginUrl);
     }
 

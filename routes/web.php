@@ -58,6 +58,8 @@ Route::name('test')->group(function () {
     Route::get('get-post', [FacebookController::class, 'getListPost'])->name('fb.user_account');
     Route::get('get-post-attachment', [FacebookController::class, 'getAttachmentPost'])->name('fb.user_account');
     Route::get('fb-lookup', [FacebookController::class, 'userLookup'])->name('fb.user_lookup');
+    Route::get('test-access-token', [SettingController::class, 'createChannelSetting']);
+    Route::get('get-page-info', [FacebookController::class, 'getPageAccount']);
 });
 
 Route::get('chinh-sach-rieng-tu', function () {

@@ -1,6 +1,49 @@
+@isset($access_token)
+    @dd($access_token)
+@endisset
+
+
+
 @extends('layouts.user')
 
 @section('content')
+    @isset($channels)
+        <div class="modal" id="select-channel" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Select a channel</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container channel-box">
+                            <table class="w-100">
+                                @foreach ($channels as $channel)
+                                    <tr>
+
+                                        <td class="table-item">
+                                            <p>{{ $channel['name'] }}</p>
+                                        </td>
+                                        <td class="table-item d-flex justify-content-end">
+                                            <div class="btn-danger btn"> add</div>
+                                        </td>
+
+                                    </tr>
+                                @endforeach
+                            </table>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            $(document).ready(function() {
+                $('#select-channel').modal('show')
+            })
+        </script>
+    @endisset
     <div class="main-content">
         <div class="d-flex flex-column flex-row-fluid">
             <div class="card card-stretch card-custom">
@@ -115,7 +158,8 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="modal-channel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="modal-channel" tabindex="-1" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog container" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -138,6 +182,7 @@
                     addFacebookPageChannel();
                 });
                 renderTableChannels();
+
             });
 
             function addFacebookPageChannel() {
@@ -158,6 +203,20 @@
                     },
                 });
             }
+
+            // function getInfoFacebookPage() {
+            //     $.ajax({
+            //         url: "{{ env('APP_ENV') == 'production' ? secure_url(route('channel.all')) : route('channel.all') }}",
+            //         type: 'GET',
+            //         headers: {
+            //             'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            //         },
+
+            //         success: function(data) {
+            //             tableChannel.html(data);
+            //         },
+            //     })
+            // }
         </script>
     @endpush
 @endsection
