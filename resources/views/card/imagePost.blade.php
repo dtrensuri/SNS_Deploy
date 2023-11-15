@@ -6,7 +6,7 @@
         <h3 class="dropzone-msg-title text-dark-75">Drop files here or click to upload.</h3>
         <span class="dropzone-msg-desc text-muted">Only image files are allowed for upload. (Max 25MB)</span>
     </div>
-    <form enctype="multipart/form-data" action="__URL__" method="POST" class="dropzone" id="my-awesome-dropzone">
+    <form enctype="multipart/form-data" action="/" method="POST" class="dropzone" id="my-awesome-dropzone">
         <input type="hidden" name="MAX_FILE_SIZE" value="25000" />
         @csrf
     </form>

@@ -4,7 +4,7 @@
             <td>
                 @php
                     $time = new \DateTime($postDetail->posted_time);
-                    echo $time->format('d/m/Y');
+                    echo $time->format('H:i - Y/m/d');
                 @endphp
             </td>
             <td>

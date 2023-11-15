@@ -355,22 +355,6 @@ class FacebookController extends Controller
 
                     }
 
-                    // $postAttachment = $this->getAttachmentPost($post['id']);
-                    // if (isset($postAttachment)) {
-                    //     $imageSrc = $postAttachment['media']['image']['src'];
-                    //     $images = array(
-                    //         'image_url' => $imageSrc,
-                    //         'post_id' => $post['id']
-                    //     );
-
-                    //     Log::info('Save data image to database');
-                    //     try {
-                    //         Media::create($images);
-                    //     } catch (\Exception $e) {
-                    //         Log::error('Save data image to database failed' . "\n" . $e->getMessage());
-                    //     }
-                    // }
-
                 }
             }
 
@@ -506,39 +490,43 @@ class FacebookController extends Controller
 
     public function autoUpdateFacebookData()
     {
-        Log::info('Call API to update Facebook data');
-        $posts = Post::all();
-        foreach ($posts as $post) {
-            // Log::info($post->post_id);
-            try {
-                $engaged = $this->getTotalEngagedUsers($post->post_id);
-                if ($engaged) {
-                    $post->total_engaged = $engaged;
+        Log::info('Update facebook post data');
+        $tokensData = Channel::all();
+        foreach ($tokensData as $tokenData) {
+            $accessToken = $tokenData->access_token;
+            $this->client->setDefaultAccessToken($accessToken);
+            $listPost = $this->getListPost();
+            if ($listPost) {
+                foreach ($listPost as $post) {
+                    $postStatistics = $this->getPostStatistics($post['id']);
+                    $postData = array(
+                        'post_id' => $post['id'],
+                        'content' => nl2br(e($post['message'])),
+                        'status' => 'Đã đăng',
+                        'total_impressions' => $postStatistics['post_impressions'],
+                        'total_engaged' => $postStatistics['post_engaged'],
+                        'total_reactions' => $postStatistics['post_reactions'],
+                        'total_comment' => $postStatistics['post_comments'],
+                        'channel_id' => $tokenData->id,
+                        'platform' => 'facebook',
+                        'created_at' => $post['created_time'],
+                        'posted_time' => $post['created_time'],
+                        'updated_at' => now(),
+                        'link' => "https://facebook.com/{$post['id']}"
+                    );
+
+                    Log::info('Save data post to database');
+                    try {
+                        Post::updateOrCreate(['post_id' => $post['id']], $postData);
+                    } catch (\Exception $e) {
+                        Log::error('Save data post to database failed' . "\n" . $e->getMessage());
+
+                    }
+
                 }
-            } catch (\Exception $e) {
-                Log::error('Lỗi call api getTotalEngagedUsers facebook' . $e->getMessage());
-                return true;
             }
-            try {
-                $impressions = $this->getTotalImpressions($post->post_id);
-                if ($impressions) {
-                    $post->total_impressions = $impressions;
-                }
-            } catch (\Exception $e) {
-                Log::error('Lỗi call api getTotalImpressions facebook');
-                return true;
-            }
-            try {
-                $reactions = $this->getTotalReactions($post->post_id);
-                if ($reactions) {
-                    $post->total_reactions = $reactions;
-                }
-            } catch (\Exception $e) {
-                Log::error('Lỗi call api getTotalReactions facebook');
-                return true;
-            }
-            $post->save();
+
         }
-        return true;
+        Log::info('Refresh data successfully');
     }
 }
