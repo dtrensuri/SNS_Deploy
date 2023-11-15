@@ -183,7 +183,7 @@ class FacebookController extends Controller
             "pages_show_list",
             "read_insights",
         ];
-        $loginUrl = (env('APP_ENV') == "production") ? $helper->getLoginUrl($this->callback, $this->permissions) : route('facebook.callBacks');
+        $loginUrl = (env('APP_ENV') == "production") ? $helper->getLoginUrl($this->callback, $permissions) : route('facebook.callBacks');
         return redirect()->away($loginUrl);
     }
 
